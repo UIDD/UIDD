@@ -1,4 +1,4 @@
 [submodule "src/cpp-ethereum"]
 	path = src/cpp-ethereum
-	url = https://github.com/uiddproject/cpp-eth-uidd.git
+	url = https://github.com/UIDD/cpp-eth-uidd.git
 	branch = develop
