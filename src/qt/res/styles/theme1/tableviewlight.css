@@ -2,7 +2,7 @@
 Table View light CSS
 --------------------------------------------*/
 QHeaderView{
-    color: #5a5a5d;
+    color: #5a5d5a;
     background-color: #e1e1e1;
     border: none;
 }
@@ -41,7 +41,7 @@ QTableView::item{
 QTableView::item:selected{
     qproperty-showGrid: false;
     background-color: #ffffff;
-    color: #5a5a5d;
+    color: #5a5d5a;
 }
 
 /*--------------------------------------------
@@ -49,7 +49,7 @@ Scroll Bar Vertical CSS
 --------------------------------------------*/
 QScrollBar:vertical {
     border-radius: 0px;
-    border-left: 1px solid #6a6a6d;
+    border-left: 1px solid #6a6d6a;
     background: #747474;
     width: 19px;
     padding: 10px 4px;
@@ -68,7 +68,7 @@ Scroll Bar Horizontal CSS
 --------------------------------------------*/
 QScrollBar:horizontal {
     border-radius: 0px;
-    border-left: 1px solid #6a6a6d;
+    border-left: 1px solid #6a6d6a;
     background: #747474;
     height: 19px;
     padding: 4px 10px;

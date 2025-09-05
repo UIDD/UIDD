@@ -3,13 +3,13 @@ Tree view CSS
 --------------------------------------------*/
 QTreeWidget {
     background-color:rgba(0,0,0,0);
-    selection-background-color: #4f9fdd;
+    selection-background-color: #4fdd9f;
     show-decoration-selected:0;
 }
 QTreeView{
-    color: #6f80ab;
-    background-color: #1d2843;
-    alternate-background-color: #1d2843;
+    color: #6fab80;
+    background-color: #1d4328;
+    alternate-background-color: #1d4328;
     border: none;
     font: normal;
     qproperty-showGrid: false;
@@ -22,45 +22,45 @@ QTreeView::item{
 }
 QTreeView::item:selected{
     qproperty-showGrid: false;
-    background: #4f9fdd;
+    background: #4fdd9f;
     color: #ffffff;
 }
 QTreeView::disabled{
-    color: rgba(111, 128, 171, 20%);
+    color: rgba(111, 171, 128, 20%);
 }
 /*--------------------------------------------
 Scroll bar dark CSS
 --------------------------------------------*/
 QScrollBar:vertical {
     border-radius: 0px;
-    background: #1d2843;
+    background: #1d4328;
     width: 16px;
     padding: 5px 4px;
 }
 QScrollBar::handle:vertical {
     border: none;
-    background: #49587a;
+    background: #497A58;
     border-radius: 4px;
     min-height: 45px;
 }
 QScrollBar::handle:vertical:disabled {
-    background: rgba(29, 40, 67, 40%);
+    background: rgba(29, 67, 40, 40%);
 }
 
 QScrollBar:horizontal {
     border-radius: 0px;
-    background: #1d2843;
+    background: #1d4328;
     height: 16px;
     padding: 4px 5px;
 }
 QScrollBar::handle:horizontal {
     border: none;
-    background: #49587a;
+    background: #497A58;
     border-radius: 4px;
     min-width: 45px;
 }
 QScrollBar::handle:horizontal:disabled {
-    background: rgba(29, 40, 67, 40%);
+    background: rgba(29, 67, 40, 40%);
 }
 /*--------------------------------------------
 Check Box CSS

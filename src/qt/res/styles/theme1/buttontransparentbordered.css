@@ -19,5 +19,5 @@ QPushButton:pressed {
 }
 QPushButton::disabled {
     color: rgba(255, 255, 255, 40%);
-    border-color: rgba(90, 90, 93, 60%);
+    border-color: rgba(90, 93, 90, 60%);
 }
