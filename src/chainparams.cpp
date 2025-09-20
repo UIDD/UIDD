@@ -181,8 +181,8 @@ public:
                                     consensus.nMPoSRewardRecipients + 
                                     COINBASE_MATURITY;
 
-        consensus.nFixUTXOCacheHFHeight=11000;
-        consensus.nEnableHeaderSignatureHeight = 15910;
+        consensus.nFixUTXOCacheHFHeight=35000;
+        consensus.nEnableHeaderSignatureHeight = 55910;
     }
 };
 
