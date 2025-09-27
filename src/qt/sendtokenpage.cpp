@@ -18,7 +18,7 @@
 #include <qt/styleSheet.h>
 #include <interfaces/node.h>
 
-static const CAmount SINGLE_STEP = 0.00000001*COIN;
+static const CAmount SINGLE_STEP = 0.000001*COIN;
 
 struct SelectedToken{
     std::string address;

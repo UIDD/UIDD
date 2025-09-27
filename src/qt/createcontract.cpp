@@ -30,8 +30,8 @@ static const QString PARAM_GASLIMIT = "gaslimit";
 static const QString PARAM_GASPRICE = "gasprice";
 static const QString PARAM_SENDER = "sender";
 
-static const CAmount SINGLE_STEP = 0.00000001*COIN;
-static const CAmount HIGH_GASPRICE = 0.001*COIN;
+static const CAmount SINGLE_STEP = 0.000001*COIN;
+static const CAmount HIGH_GASPRICE = 0.1*COIN;
 }
 using namespace CreateContract_NS;
 
