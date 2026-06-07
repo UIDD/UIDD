@@ -139,10 +139,10 @@ public:
         // This is fine at runtime as we'll fall back to using them as a oneshot if they don't support the
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
-        vSeeds.emplace_back("uidd3.dynu.net"); // Uidd mainnet
-        vSeeds.emplace_back("uidd5.dynu.net"); // Uidd mainnet
-        vSeeds.emplace_back("uidd6.dynu.net"); // Uidd mainnet
-        vSeeds.emplace_back("uidd7.dynu.net"); // Uidd mainnet
+        vSeeds.emplace_back("uidd3.uidd.org"); // Uidd mainnet
+        vSeeds.emplace_back("uidd5.uidd.org"); // Uidd mainnet
+        vSeeds.emplace_back("uidd6.uidd.org"); // Uidd mainnet
+        vSeeds.emplace_back("uidd7.uidd.org"); // Uidd mainnet
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,50);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,20);
@@ -253,7 +253,7 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        vSeeds.emplace_back("uidd4.dynu.net"); // Uidd testnet
+        vSeeds.emplace_back("uidd4.uidd.org"); // Uidd testnet
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
