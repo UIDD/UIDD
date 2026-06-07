@@ -881,7 +881,7 @@ static UniValue sendtocontract(const JSONRPCRequest& request){
 
 
     std::string contractaddress = request.params[0].get_str();
-    if(contractaddress.size() != 40 || !CheckHex(contractaddress))
+    if(contractaddress.size() != 40 || !CheckHex(contractaddress || AddressExists(contractaddress)))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Incorrect contract address");
 
     dev::Address addrAccount(contractaddress);
