@@ -953,7 +953,7 @@ Modal Overlay CSS
 #ModalOverlay #labelSyncDone, 
 #ModalOverlay #labelProgressIncrease, 
 #ModalOverlay #labelEstimatedTimeLeft{
-    color: #b5bfd7;
+    color: #b5d7bf;
 }
 #ModalOverlay #labelNote {
     font: 20pt;
@@ -997,12 +997,12 @@ QToolButton#tabBarTool::hover{
 Stake Page Widget CSS
 --------------------------------------------*/
 #StakePage QLabel{
-    color: #b5bfd7;
+    color: #b5d7bf;
 }
 #frameStakeInfo {
     background-color: #ffffff;
-    border: 1px dotted #b5bfd7;
-    color: #b5bfd7;
+    border: 1px dotted #b5d7bf;
+    color: #b5d7bf;
     border-radius: 4px;
 }
 #frameStakeInfo #labelAssets{
@@ -1101,7 +1101,7 @@ TokenItemWidget #senderAddress{
     font: 10pt;
 }
 TokenItemWidget #tokenLogo{
-    background-color: #a1daff;
+    background-color: #a1ffda;
     border-radius: 20px;
 }
 DelegationListWidget{
@@ -1120,7 +1120,7 @@ DelegationItemWidget #labelAddress{
     font: 10pt;
 }
 DelegationItemWidget #delegationLogo{
-    background-color: #a1daff;
+    background-color: #a1ffda;
     border-radius: 20px;
 }
 SuperStakerListWidget{
@@ -1139,7 +1139,7 @@ SuperStakerItemWidget #labelAddress{
     font: 10pt;
 }
 SuperStakerItemWidget #superStakerLogo{
-    background-color: #a1daff;
+    background-color: #a1ffda;
     border-radius: 20px;
 }
 SuperStakerItemWidget #buttonDelegations{
@@ -1189,7 +1189,7 @@ SendCoinsDialog QAbstractScrollArea::corner {
 Delegate and Staker Page Widget CSS
 --------------------------------------------*/
 #widgetStakingAssets QLabel{
-    color: #b5bfd7;
+    color: #b5d7bf;
 }
 #widgetStakingAssets #labelAssets{
     color: #000000;
