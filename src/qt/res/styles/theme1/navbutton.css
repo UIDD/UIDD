@@ -14,7 +14,7 @@ QToolButton:pressed, QToolButton:hover:pressed, QToolButton:checked {
 }
 QToolButton:hover:!checked {
     color: rgba(45, 45, 45, 85%);
-    background: rgba(227, 240, 234, 85%);
+    background: rgba(227, 240, 239, 85%);
 }
 QToolButton:disabled {
     color: rgba(255, 255, 255, 10%);

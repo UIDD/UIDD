@@ -21,6 +21,6 @@ QPushButton:pressed {
 QPushButton:disabled {
     background: #f7f7f7;
     border: 1px solid #cdcecd;
-    color: #b3b3b4;
+    color: #b3b4b3;
     padding-top: 5px;
 }

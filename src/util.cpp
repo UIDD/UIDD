@@ -873,3 +873,12 @@ bool CheckHex(const std::string& str) {
     }
     return str.size() > data && str.find_first_not_of("0123456789abcdefABCDEF", data) == std::string::npos;
 }
+
+bool AddressExists(const std::string& address)
+{
+    return address == "0000000000000000000000000000000000000080" ||
+           address == "0000000000000000000000000000000000000081" ||
+           address == "0000000000000000000000000000000000000082" ||
+           address == "0000000000000000000000000000000000000083" ||
+           address == "0000000000000000000000000000000000000084";
+}

@@ -4,8 +4,6 @@
 
 #include <qt/bitcoinunits.h>
 
-#include <primitives/transaction.h>
-
 #include <QStringList>
 
 BitcoinUnits::BitcoinUnits(QObject *parent):
@@ -99,9 +97,9 @@ int BitcoinUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case BTC: return 6;
-    case mBTC: return 3;
-    case uBTC: return 0;
+    case BTC: return 8;
+    case mBTC: return 5;
+    case uBTC: return 2;
     case SAT: return 0;
     default: return 0;
     }

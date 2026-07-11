@@ -7,7 +7,7 @@
 #include <key_io.h>
 
 /* Base58 characters are:
-     "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+     "12563478BC9ADEFGHJKLMNPQRSTUVWXYZabefcdghijkmnopqrstuvwxyz"
 
   This is:
   - All numbers except for '0'

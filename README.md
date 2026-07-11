@@ -22,13 +22,13 @@ These are some resources that might be helpful in understanding Uidd.
 Basic usage resources:
 
 * [User guide](https://docs.uidd.site/en/)
-* [Uidd-Qt Wallet Tutorial](https://github.com/uiddproject/documents/tree/master/en/Uidd-Wallet-Tutorial#uidd-qt-wallet-tutorial)
-* [Uidd staking tutorial](https://github.com/uiddproject/documents/tree/master/en/How-to-Stake-with-Uidd)
-* [Uidd tutorial on Raspberry Pi](https://github.com/uiddproject/documents/tree/master/en/Uidd-on-Raspberry-Pi)
-* [Running Uidd on Amazon AWS using Uidd AMI](https://github.com/uiddproject/documents/tree/master/en/Uidd-AWS)
-* [Encrypting and unlocking wallet](https://github.com/uiddproject/documents/tree/master/en/Encrypt-and-Unlock-Uidd-Wallet)
-* [Testnet guide](https://github.com/uiddproject/documents/blob/master/en/Testnet-User-Guide.md)
-* [Block explorer](https://uidd.info), [Older explorer](https://explorer.uidd.org)
+* [Uidd-Qt Wallet Tutorial](https://github.com/UIDD/documents/tree/master/en/Uidd-Wallet-Tutorial#uidd-qt-wallet-tutorial)
+* [Uidd staking tutorial](https://github.com/UIDD/documents/tree/master/en/How-to-Stake-with-Uidd)
+* [Uidd tutorial on Raspberry Pi](https://github.com/UIDD/documents/tree/master/en/Uidd-on-Raspberry-Pi)
+* [Running Uidd on Amazon AWS using Uidd AMI](https://github.com/UIDD/documents/tree/master/en/Uidd-AWS)
+* [Encrypting and unlocking wallet](https://github.com/UIDD/documents/tree/master/en/Encrypt-and-Unlock-Uidd-Wallet)
+* [Testnet guide](https://github.com/UIDD/documents/blob/master/en/Testnet-User-Guide.md)
+* [Block explorer](https://scan.uidd.org), [Older explorer](https://explorer.uidd.org)
 
 
 Development resources:
@@ -36,7 +36,7 @@ Development resources:
 * [Uidd Book - A Developer's Guide To UIDD](http://book.uidd.site/en/)
 * [Uidd contract usage](https://docs.uidd.site/en/QRC20-Token-Introduce.html)
 * [Deploying a custom token to Uidd](https://blog.uidd.org/uidd-custom-token-walkthrough-467d725fa27d)
-* [UiddJS document](https://uiddproject.github.io/uiddjs-doc/)
+* [UiddJS document](https://UIDD.github.io/uiddjs-doc/)
 * [Smart contract ICO example](http://book.uidd.site/en/part3/ico.htm)
 * [Early example faucet contract](http://earlz.net/view/2017/06/30/2144/the-uidd-sparknet-faucet)
 
@@ -51,17 +51,17 @@ Developer's Tools
 -----------------
 
 * Smart contract deployment tool
-  * https://github.com/uiddproject/solar
+  * https://github.com/UIDD/solar
 * DApp JavaScript Library
-  * https://github.com/uiddproject/uiddjs
+  * https://github.com/UIDD/uiddjs
 * A toolkit for building uidd light wallets
-  * https://github.com/uiddproject/uiddjs-wallet
+  * https://github.com/UIDD/uiddjs-wallet
 * CORS uiddd RPC proxy for DApp
-  * https://github.com/uiddproject/uiddportal
+  * https://github.com/UIDD/uiddportal
 * Docker images for running uidd services
-  * https://github.com/uiddproject/uidd-docker
-* uidd.info API that powers the block explorer and the UIDD Web wallet
-  * https://github.com/uiddproject/uiddinfo-api#uiddinfo-api-documentation
+  * https://github.com/UIDD/uidd-docker
+* scan.uidd.org API that powers the block explorer and the UIDD Web wallet
+  * https://github.com/UIDD/uiddinfo-api#uiddinfo-api-documentation
 
 
 What is Uidd Core?
@@ -93,21 +93,21 @@ A browser wallet that supports the Ledger hardware wallet, offline cold wallet, 
 
 Web site https://uiddwallet.org
 
-User documentation https://github.com/uiddproject/documents/tree/master/en/UIDD-WebWallet-usage
+User documentation https://github.com/UIDD/documents/tree/master/en/UIDD-WebWallet-usage
 
 ### Uidd Electrum
 
 A light wallet that supports the Ledger and Trezor hardware wallets and is based on the well-known Electrum wallet software. 
 
-Download: https://github.com/uiddproject/uidd-electrum/releases
+Download: https://github.com/UIDD/uidd-electrum/releases
 
 ### iOS and Android Wallets
 
 These wallets run on mobile devices and synchronize quickly. 
 
-Android Download: https://play.google.com/store/apps/details?id=org.uidd.wallet
+Android Download: https://play.google.com/store/apps/details?id=org.uidd.newwallet
 
-iOS Download: https://github.com/uiddproject/uidd-ios (open source, we are still working with Apple to get approval for their app store)
+iOS Download: https://github.com/UIDD/uidd-ios (open source, deprecated)
 
 ### Ledger Chrome Wallet
 
@@ -120,7 +120,7 @@ How to install: https://ledger.zendesk.com/hc/en-us/articles/115003776913-How-to
 
 Make sure to check out these resources as well for more information and to keep up to date with all the latest news about Uidd. At least 1 developer is always around, so if you're developing on Uidd and need help, we'd love to welcome you to our community.
 
-*	@UiddOfficial on Twitter https://twitter.com/uiddofficial
+*	@Uidd on Twitter https://twitter.com/uidd
 * Uidd blog https://blog.uidd.org/
 *	Uidd Telegram Group https://t.me/uiddofficial, other languages available
 * Uidd Discord https://discordapp.com/invite/wRfmkQ9
@@ -143,7 +143,7 @@ Make sure to check out these resources as well for more information and to keep 
 
 ### Validate and Reproduce Binaries
 
-Uidd uses a tool called Gitian to make reproducible builds that can be verified by anyone. Instructions on setting up a Gitian VM and building Uidd are provided in [Gitan Building](https://github.com/uiddproject/uidd/blob/master/doc/gitian-building.md)
+Uidd uses a tool called Gitian to make reproducible builds that can be verified by anyone. Instructions on setting up a Gitian VM and building Uidd are provided in [Gitan Building](https://github.com/UIDD/UIDD/blob/master/doc/gitian-building.md)
 
 ### Build on Ubuntu
 
@@ -159,7 +159,7 @@ This is a quick start script for compiling Uidd on Ubuntu
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
 
-    git clone https://github.com/uiddproject/uidd --recursive
+    git clone https://github.com/UIDD/uidd --recursive
     cd uidd
 
     # Note autogen will prompt to install some more dependencies if needed
@@ -169,7 +169,7 @@ This is a quick start script for compiling Uidd on Ubuntu
     
 ### Build on CentOS
 
-Here is a brief description for compiling Uidd on CentOS, for more details please refer to [the specific document](https://github.com/uiddproject/uidd/blob/master/doc/build-unix.md)
+Here is a brief description for compiling Uidd on CentOS, for more details please refer to [the specific document](https://github.com/UIDD/UIDD/blob/master/doc/build-unix.md)
 
     # Compiling boost manually
     sudo yum install python-devel bzip2-devel
@@ -189,7 +189,7 @@ Here is a brief description for compiling Uidd on CentOS, for more details pleas
     sudo yum install qt5-qttools-devel protobuf-devel qrencode-devel
     
     # Building Uidd
-    git clone --recursive https://github.com/uiddproject/uidd.git
+    git clone --recursive https://github.com/UIDD/UIDD/git
     cd uidd
     ./autogen.sh
     ./configure
@@ -220,7 +220,7 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 
 1. Clone the uidd source code and cd into `uidd`
 
-        git clone --recursive https://github.com/uiddproject/uidd.git
+        git clone --recursive https://github.com/UIDD/UIDD/git
         cd uidd
 
 2.  Build uidd-core:
@@ -251,10 +251,10 @@ Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/uiddproject/uidd/tags) are created
+completely stable. [Tags](https://github.com/UIDD/UIDD/tags) are created
 regularly to indicate new official, stable release versions of Uidd.
 
-The contribution workflow is described in [CONTRIBUTING.md](https://github.com/uiddproject/uidd/blob/master/CONTRIBUTING.md).
+The contribution workflow is described in [CONTRIBUTING.md](https://github.com/UIDD/UIDD/blob/master/CONTRIBUTING.md).
 
 
 Testing
@@ -282,3 +282,4 @@ Changes should be tested by somebody other than the developer who wrote the
 code. This is especially important for large or high-risk changes. It is useful
 to add a test plan to the pull request description if testing the changes is
 not straightforward.
+

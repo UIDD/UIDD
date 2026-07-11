@@ -28,7 +28,7 @@ QHeaderView::up-arrow {
 QTableView{
     background-color: #f3f3f3;
     alternate-background-color: #ededed;
-    border: 1px solid #919192;
+    border: 1px solid #919291;
     font: normal;
     qproperty-showGrid: false;
     qproperty-alternatingRowColors: true;

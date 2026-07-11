@@ -18,8 +18,8 @@ void CompatTests::bswapTests()
 {
 	// Sibling in bitcoin/src/test/bswap_tests.cpp
 	uint16_t u1 = 0x1234;
-	uint32_t u2 = 0x56789abc;
-	uint64_t u3 = 0xdef0123456789abc;
+	uint32_t u2 = 0x569a78bc;
+	uint64_t u3 = 0xdef0123478569abc;
 	uint16_t e1 = 0x3412;
 	uint32_t e2 = 0xbc9a7856;
 	uint64_t e3 = 0xbc9a78563412f0de;

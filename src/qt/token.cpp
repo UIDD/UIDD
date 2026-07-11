@@ -82,7 +82,7 @@ bool ToHash160(const std::string& strUiddAddress, std::string& strHash160)
     CTxDestination uiddAddress = DecodeDestination(strUiddAddress);
     if(!IsValidDestination(uiddAddress))
         return false;
-    const CKeyID * keyid = boost::get<CKeyID>(&uiddAddress);
+    const PKHash * keyid = boost::get<PKHash>(&uiddAddress);
     if(keyid){
         strHash160 = HexStr(valtype(keyid->begin(),keyid->end()));
     }else{
@@ -94,7 +94,7 @@ bool ToHash160(const std::string& strUiddAddress, std::string& strHash160)
 bool ToUiddAddress(const std::string& strHash160, std::string& strUiddAddress)
 {
     uint160 key(ParseHex(strHash160.c_str()));
-    CKeyID keyid(key);
+    PKHash keyid(key);
     CTxDestination uiddAddress = keyid;
     if(IsValidDestination(uiddAddress)){
         strUiddAddress = EncodeDestination(uiddAddress);

@@ -13,7 +13,6 @@
 #include <streams.h>
 #include <univalue.h>
 #include <util/system.h>
-#include <util/moneystr.h>
 #include <util/strencodings.h>
 
 UniValue ValueFromAmount(const CAmount& amount)
@@ -23,7 +22,7 @@ UniValue ValueFromAmount(const CAmount& amount)
     int64_t quotient = n_abs / COIN;
     int64_t remainder = n_abs % COIN;
     return UniValue(UniValue::VNUM,
-            strprintf("%s%d.%06d", sign ? "-" : "", quotient, remainder));
+            strprintf("%s%d.%08d", sign ? "-" : "", quotient, remainder));
 }
 
 std::string FormatScript(const CScript& script)
@@ -145,7 +144,7 @@ void ScriptToUniv(const CScript& script, UniValue& out, bool include_address)
     out.pushKV("type", GetTxnOutputType(type));
 
     CTxDestination address;
-    if (include_address && ExtractDestination(script, address)) {
+    if (include_address && ExtractDestination(script, address) && type != TX_PUBKEY) {
         out.pushKV("address", EncodeDestination(address));
     }
 }
@@ -161,7 +160,7 @@ void ScriptPubKeyToUniv(const CScript& scriptPubKey,
     if (fIncludeHex)
         out.pushKV("hex", HexStr(scriptPubKey.begin(), scriptPubKey.end()));
 
-    if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired)) {
+    if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired) || type == TX_PUBKEY) {
         out.pushKV("type", GetTxnOutputType(type));
         return;
     }

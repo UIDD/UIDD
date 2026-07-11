@@ -1,6 +1,5 @@
 Gitian building
 ================
-
 *Setup instructions for a Gitian build of Uidd Core using a Debian VM or physical system.*
 
 Gitian is the deterministic build process that is used to build the Uidd
@@ -314,8 +313,8 @@ Clone the git repositories for uidd and Gitian.
 
 ```bash
 git clone https://github.com/devrandom/gitian-builder.git
-git clone https://github.com/uiddproject/uidd --recursive
-git clone https://github.com/uiddproject/gitian.sigs.git
+git clone https://github.com/UIDD/uidd --recursive
+git clone https://github.com/UIDD/gitian.sigs.git
 ```
 
 Setting up the Gitian image
@@ -381,7 +380,7 @@ Output from `gbuild` will look something like
     remote: Total 57959 (delta 0), reused 0 (delta 0), pack-reused 57958
     Receiving objects: 100% (57959/57959), 53.76 MiB | 484.00 KiB/s, done.
     Resolving deltas: 100% (41590/41590), done.
-    From https://github.com/uiddproject/uidd
+    From https://github.com/UIDD/uidd
     ... (new tags, new branch etc)
     --- Building for trusty amd64 ---
     Stopping target if it is up
@@ -459,7 +458,7 @@ Then when building, override the remote URLs that gbuild would otherwise pull fr
 ```bash
 
 cd /some/root/path/
-git clone https://github.com/uiddproject/uidd-detached-sigs.git
+git clone https://github.com/UIDD/uidd-detached-sigs.git
 
 BTCPATH=/some/root/path/uidd
 SIGPATH=/some/root/path/uidd-detached-sigs
@@ -491,5 +490,5 @@ Uploading signatures
 ---------------------
 
 After building and signing you can push your signatures (both the `.assert` and `.assert.sig` files) to the
-[uiddproject/gitian.sigs](https://github.com/uiddproject/gitian.sigs/) repository, or if that's not possible create a pull
+[UIDD/gitian.sigs](https://github.com/UIDD/gitian.sigs/) repository, or if that's not possible create a pull
 request. You can also mail the files to Jordan Earls (earlz@uidd.org) and he will commit them.
