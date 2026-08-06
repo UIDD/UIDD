@@ -10,7 +10,7 @@ static const QSize SwitchSize = QSize (26, 26);
 static const int SwitchOffset = (FrameSize.height() - SwitchSize.height()) / 2;
 
 static const QString CustomFrameOnStlye = QString("QAbstractButton { border: none; border-radius: %1; background-color: #46D997;}").arg(FrameSize.height() / 2);
-static const QString CustomFrameOffStlye = QString("QAbstractButton { border: none; border-radius: %1; background-color: #90b39b;}").arg(FrameSize.height() / 2);
+static const QString CustomFrameOffStlye = QString("QAbstractButton { border: none; border-radius: %1; background-color: #6fab80;}").arg(FrameSize.height() / 2);
 static const QString CustomButtonStlye = QString("QPushButton { min-width: 0em; border-radius: %1; background-color: white;}").arg(SwitchSize.height() / 2);
 
 QSwitchControl::QSwitchControl(QWidget *parent):

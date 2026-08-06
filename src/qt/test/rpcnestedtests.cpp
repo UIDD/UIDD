@@ -4,15 +4,10 @@
 
 #include <qt/test/rpcnestedtests.h>
 
-#include <chainparams.h>
-#include <consensus/validation.h>
-#include <fs.h>
 #include <interfaces/node.h>
-#include <validation.h>
-#include <rpc/register.h>
 #include <rpc/server.h>
 #include <qt/rpcconsole.h>
-#include <test/test_bitcoin.h>
+#include <test/setup_common.h>
 #include <univalue.h>
 #include <util/system.h>
 
@@ -75,7 +70,7 @@ void RPCNestedTests::rpcNestedTests()
     QVERIFY(result == result2);
 
     RPCConsole::RPCExecuteCommandLine(*node, result, "getblock(getbestblockhash())[tx][0]", &filtered);
-    QVERIFY(result == "ed34050eb5909ee535fcb07af292ea55f3d2f291187617b44d3282231405b96d");
+    QVERIFY(result == "ed34050eb5909ee535fcb07af2ea9255f3d2f2911876b4174d8232231405b96d");
     QVERIFY(filtered == "getblock(getbestblockhash())[tx][0]");
 
     RPCConsole::RPCParseCommandLine(nullptr, result, "importprivkey", false, &filtered);

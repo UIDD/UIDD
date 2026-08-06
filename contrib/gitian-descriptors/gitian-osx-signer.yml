@@ -1,5 +1,6 @@
 ---
 name: "uidd-dmg-signer"
+distro: "ubuntu"
 suites:
 - "bionic"
 architectures:
@@ -7,7 +8,7 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/uiddproject/uidd-detached-sigs.git"
+- "url": "https://github.com/UIDD/uidd-detached-sigs.git"
   "dir": "signature"
 files:
 - "uidd-osx-unsigned.tar.gz"

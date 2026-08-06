@@ -46,6 +46,7 @@ void MakeSingleColorImage(QImage& img, const QColor& colorbase, double opacity =
         }
     }
 }
+
 QPixmap MakeSingleColorPixmap(QImage& img, const QColor& colorbase, double opacity = 1)
 {
     MakeSingleColorImage(img, colorbase, opacity);
@@ -105,7 +106,7 @@ PlatformStyle::PlatformStyle(const QString &_name, bool _imagesOnButtons, bool _
     tableColorInput = GetStringStyleValue("platformstyle/table-color-input", "#2fdfa5");
     tableColorInout = GetStringStyleValue("platformstyle/table-color-inout", "#40bb00");
     tableColorOutput = GetStringStyleValue("platformstyle/table-color-output", "#40bb00");
-    tableColorError = GetStringStyleValue("platformstyle/table-color-error", "#d02e49");
+    tableColorError = GetStringStyleValue("platformstyle/table-color-error", "#d0492e");
 
     // Determine multi states icon colors
     multiStatesIconColor1 = GetStringStyleValue("platformstyle/multi-states-icon-color1", "#ffffff");
@@ -132,11 +133,6 @@ QIcon PlatformStyle::SingleColorIcon(const QIcon& icon) const
     if (!colorizeIcons)
         return icon;
     return ColorizeIcon(icon, SingleColor());
-}
-
-QIcon PlatformStyle::TextColorIcon(const QString& filename) const
-{
-    return ColorizeIcon(filename, TextColor(), 0.6);
 }
 
 QIcon PlatformStyle::TextColorIcon(const QIcon& icon) const

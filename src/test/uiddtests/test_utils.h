@@ -2,7 +2,7 @@
 #include <validation.h>
 #include <util/strencodings.h>
 #include <util/convert.h>
-#include <test/test_bitcoin.h>
+#include <test/setup_common.h>
 #include <boost/filesystem/operations.hpp>
 #include <fs.h>
 
@@ -63,8 +63,8 @@ inline UiddTransaction createUiddTransaction(valtype data, dev::u256 value, dev:
 inline std::pair<std::vector<ResultExecute>, ByteCodeExecResult> executeBC(std::vector<UiddTransaction> txs){
     CBlock block(generateBlock());
     UiddDGP uiddDGP(globalState.get(), fGettingValuesDGP);
-    uint64_t blockGasLimit = uiddDGP.getBlockGasLimit(chainActive.Tip()->nHeight + 1);
-    ByteCodeExec exec(block, txs, blockGasLimit, chainActive.Tip());
+    uint64_t blockGasLimit = uiddDGP.getBlockGasLimit(ChainActive().Tip()->nHeight + 1);
+    ByteCodeExec exec(block, txs, blockGasLimit, ChainActive().Tip());
     exec.performByteCode();
     std::vector<ResultExecute> res = exec.getResult();
     ByteCodeExecResult bceExecRes;

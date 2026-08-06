@@ -34,7 +34,7 @@ static const QString PARAM_GASLIMIT = "gaslimit";
 static const QString PARAM_GASPRICE = "gasprice";
 static const QString PARAM_SENDER = "sender";
 
-static const CAmount SINGLE_STEP = 0.000001*COIN;
+static const CAmount SINGLE_STEP = 0.000100*COIN;
 static const CAmount HIGH_GASPRICE = 0.1*COIN;
 }
 using namespace SendToContract_NS;
@@ -70,7 +70,7 @@ SendToContract::SendToContract(const PlatformStyle *platformStyle, QWidget *pare
     ui->lineEditAmount->setEnabled(true);
     ui->labelContractAddress->setToolTip(tr("The contract address that will receive the funds and data."));
     ui->labelAmount->setToolTip(tr("The amount in UIDD to send. Default = 0."));
-    ui->labelSenderAddress->setToolTip(tr("The quantum address that will be used as sender."));
+    ui->labelSenderAddress->setToolTip(tr("The uidd address that will be used as sender."));
 
     m_tabInfo = new TabBarInfo(ui->stackedWidget);
     m_tabInfo->addTab(0, tr("Send To Contract"));
@@ -237,7 +237,7 @@ void SendToContract::on_sendToContractClicked()
         questionString.append(tr("<b>%1</b>?")
                               .arg(ui->lineEditContractAddress->text()));
 
-        SendConfirmationDialog confirmationDialog(tr("Confirm sending to contract."), questionString, 3, this);
+        SendConfirmationDialog confirmationDialog(tr("Confirm sending to contract."), questionString, "", "", SEND_CONFIRM_DELAY, this);
         confirmationDialog.exec();
         QMessageBox::StandardButton retval = (QMessageBox::StandardButton)confirmationDialog.result();
         if(retval == QMessageBox::Yes)

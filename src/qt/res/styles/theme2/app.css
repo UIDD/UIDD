@@ -67,7 +67,7 @@ QLabel#labelGeneral,
 #labelNetwork,
 #labelBlockChain,
 #labelMempoolTitle{
-    color: #00b245;
+    color: #04e89e;
 }
 .QWidget#widget_header{
     background-color: #25492f;
@@ -88,7 +88,7 @@ Line Edit CSS
 QLineEdit{
     border: 1px solid #497A58;
     border-radius: 14px;
-    background-color: #1A3A23;
+    background-color: #1a3a23;
     color: #6fab80;
     padding: 4px;
 }
@@ -103,12 +103,12 @@ QLineEdit::disabled{
     color: rgba(111, 171, 128, 20%);
 }
 QAbstractItemView#autoCompleterPopup{
-    background-color: #497A58;
+    background-color: #497a58;
     border: none;
     padding: 4px;
 }
 QAbstractItemView#autoCompleterPopup::item{
-    background-color: #497A58;
+    background-color: #497a58;
     color: #1A3A23;
     padding: 4px;
     padding-left: 10px;
@@ -152,7 +152,7 @@ QComboBox:down-arrow {
     top: 1px;
 }
 QComboBox QAbstractItemView::item {
-    background-color: #497A58;
+    background-color: #497a58;
     color: #1A3A23;
     padding: 4px;
     padding-left: 10px;
@@ -162,7 +162,7 @@ QComboBox QAbstractItemView::item:selected {
     color: #ffffff;
 }
 QComboBox QAbstractItemView{
-    background-color: #497A58;
+    background-color: #497a58;
     border: none;
     border-radius: 6px;
     padding: 6px 0px;
@@ -254,7 +254,7 @@ Spin Box CSS
 --------------------------------------------*/
 QAbstractSpinBox {
     padding: 4px;
-    background-color: #1A3A23;
+    background-color: #1a3a23;
     background-position: right;
     background-repeat: no-repeat;
     border: 1px solid #497A58;
@@ -357,7 +357,7 @@ QScrollBar:vertical {
 }
 QScrollBar::handle:vertical {
     border: none;
-    background: #497A58;
+    background: #497a58;
     border-radius: 4px;
     min-height: 45px;
 }
@@ -374,7 +374,7 @@ QTextEdit QScrollBar:vertical {
 }
 QTextEdit QScrollBar::handle:vertical {
     border: none;
-    background: #497A58;
+    background: #497a58;
     border-radius: 5px;
     min-height: 30px;
 }
@@ -391,7 +391,7 @@ QPlainTextEdit QScrollBar:vertical {
 }
 QPlainTextEdit QScrollBar::handle:vertical {
     border: none;
-    background: #497A58;
+    background: #497a58;
     border-radius: 5px;
     min-height: 30px;
 }
@@ -402,7 +402,7 @@ QComboBox QScrollBar:vertical {
     border-radius: 0px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    background: #497A58;
+    background: #497a58;
     width: 10px;
     padding: 0px 0px;
 }
@@ -444,7 +444,7 @@ QScrollBar:horizontal {
 }
 QScrollBar::handle:horizontal {
     border: none;
-    background: #497A58;
+    background: #497a58;
     border-radius: 4px;
     min-width: 45px;
 }
@@ -517,7 +517,7 @@ QTextEdit CSS
 QTextEdit {
     border: 1px solid #497A58;
     border-radius: 14px;
-    background-color: #1A3A23;
+    background-color: #1a3a23;
     color: #ffffff;
     padding-left: 5px;
 }
@@ -528,8 +528,8 @@ QTextEdit::focus:!read-only{
     border: 1px solid #5d8f6b;
 }
 QTextEdit::disabled {
-    border: 1px solid rgba(23, 62, 35, 40%);
-    color: rgba(111, 171, 128, 20%);
+    border: 1px solid rgba(90, 93, 90, 40%);
+    color: rgba(42, 42, 42, 10%);
 }
 /*--------------------------------------------
 QPlainTextEdit CSS
@@ -537,7 +537,7 @@ QPlainTextEdit CSS
 QPlainTextEdit {
     border: 1px solid #497A58;
     border-radius: 14px;
-    background-color: #1A3A23;
+    background-color: #1a3a23;
     color: #ffffff;
     padding-left: 5px;
 }
@@ -573,13 +573,13 @@ QStatusBar QLabel::disabled{
 UnitDisplayStatusBarControl {
     color: #6fab80; 
     background: transparent;
-    border: 1px solid #3B4767;
+    border: 1px solid #3B6747;
     border-radius: 12px;
     font: 16px;
     padding: 0px;
 }
 UnitDisplayStatusBarControl QMenu::item {
-    background-color: #497A58;
+    background-color: #497a58;
     color: #1A3A23;
     padding: 4px;
     padding-left: 10px;
@@ -589,7 +589,7 @@ UnitDisplayStatusBarControl QMenu::item:selected {
     color: #ffffff;
 }
 UnitDisplayStatusBarControl QMenu{
-    background-color: #497A58;
+    background-color: #497a58;
     border: none;
     border-radius: 6px;
     padding: 10px 0px;
@@ -676,7 +676,7 @@ QMenu{
 QMenu::item {
     border: none;
     padding: 5px 32px;
-    background-color: #497A58;
+    background-color: #497a58;
     color: #1A3A23;
 }
 QMenu::item:selected {
@@ -820,7 +820,7 @@ Push Button CSS
 QPushButton {
     color: #4fdd9f; 
     background: transparent;
-    border: 1px solid #497A58;
+    border: 1px solid #497a58;
     border-radius: 14px;
     min-width: 5em;
     padding: 6px;
@@ -903,7 +903,7 @@ QCalendarWidget QWidget{
     border-radius: 0px;
 }
 #qt_calendar_navigationbar{
-    background: #2eaa5a;
+    background: #2ED09A;
 }
 QCalendarWidget QAbstractSpinBox {
     min-width: 0px;
@@ -1077,7 +1077,7 @@ Token Page Widget CSS
     background-color: rgba(38, 80, 52, 20%);
     border: 1px solid rgba(56, 105, 72, 20%);
 }
-#tokenItemFrame, #delegationItemFrame, #superStakerItemFrame{
+#tokenItemFrame{
     background-color: #224b2f;
     border-radius: 6px;
 }
@@ -1093,61 +1093,12 @@ TokenItemWidget #tokenBalance{
     font: 13pt;
 }
 TokenItemWidget #senderAddress{
-    color: #497A58;
+    color: #497a58;
     font: 10pt;
 }
 TokenItemWidget #tokenLogo{
     background-color: #336342;
     border-radius: 20px;
-}
-DelegationListWidget{
-    background-color: #1a4528;
-}
-DelegationItemWidget #labelFee{
-    color: #6fab80;
-    font: 13pt;
-}
-DelegationItemWidget #labelStaker{
-    color: white;
-    font: 13pt;
-}
-DelegationItemWidget #labelAddress{
-    color: #497a58;
-    font: 10pt;
-}
-DelegationItemWidget #delegationLogo{
-    background-color: #336342;
-    border-radius: 20px;
-}
-SuperStakerListWidget{
-    background-color: #1a4528;
-}
-SuperStakerItemWidget #labelFee{
-    color: #6fab80;
-    font: 13pt;
-}
-SuperStakerItemWidget #labelStaker{
-    color: white;
-    font: 13pt;
-}
-SuperStakerItemWidget #labelAddress{
-    color: #497A58;
-    font: 10pt;
-}
-SuperStakerItemWidget #superStakerLogo{
-    background-color: #336342;
-    border-radius: 20px;
-}
-SuperStakerItemWidget #buttonDelegations{
-    min-width: 7em;
-    padding: 1px;
-    border-radius: 8px;
-    min-height: 16px;
-    font: 8pt;
-}
-QFrame #frameStakerConfig{
-    border: 1px solid #1A3A23;
-    border-radius: 5px;
 }
 /*--------------------------------------------
 Send Coins Dialog CSS
@@ -1180,17 +1131,4 @@ SendCoinsDialog QAbstractScrollArea::corner {
 }
 #SendCoinsEntry #hLine{
     border-top: 1px solid rgba(111, 171, 128, 60%);
-}
-/*--------------------------------------------
-Delegate and Staker Page Widget CSS
---------------------------------------------*/
-#widgetStakingAssets QLabel{
-    color: #477d58;
-}
-#widgetStakingAssets #labelAssets{
-    color: white;
-    font: 13pt;
-}
-#vLineAssets{
-    border-left: 1px solid #1a4528;
 }

@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#define UIDD_RELEASES "https://github.com/uiddproject/uidd/releases"
+#define UIDD_RELEASES "https://github.com/UIDD/UIDD/releases"
 
 class Version {
 
