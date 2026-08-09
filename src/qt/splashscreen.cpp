@@ -80,7 +80,7 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
     pixPaint.setPen(logo_frame_color);
     pixPaint.drawPath(logoPath);
 
-    QPixmap logo = PlatformStyle::SingleColorIcon(":/icons/bitcoin", foreground_color).pixmap(QSize(logoImageSize, logoImageSize));
+    QPixmap logo = PlatformStyle::SingleColorIcon(":/icons/uidd", foreground_color).pixmap(QSize(logoImageSize, logoImageSize));
     pixPaint.drawPixmap(logoRect.x() + 6, logoRect.y() + 6, logo);
 
     pixPaint.setPen(foreground_color);
