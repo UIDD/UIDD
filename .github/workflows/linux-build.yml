@@ -1,0 +1,137 @@
+name: ABJJ LINUX BUILD
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch: 
+
+jobs:
+  build-ubuntu:
+    name: Build on Ubuntu 22.04 (${{ matrix.host }})
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          - x86_64-pc-linux-gnu
+          - aarch64-linux-gnu
+          - riscv64-linux-gnu
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+          submodules: recursive
+
+    - name: Cache depends
+      uses: actions/cache@v4
+      id: depends-cache
+      with:
+        path: |
+          depends/sources
+          depends/built
+          depends/${{ matrix.host }}
+        key: ${{ runner.os }}-depends-${{ matrix.host }}-v3-${{ hashFiles('depends/packages/*.mk') }}
+        restore-keys: |
+          ${{ runner.os }}-depends-${{ matrix.host }}-v3-
+
+    - name: Install Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y make automake cmake curl g++-multilib libtool binutils-gold bsdmainutils pkg-config python3
+    - name: Install Arm64 Cross-Compilers
+      if: matrix.host == 'aarch64-linux-gnu'
+      run: |
+        sudo apt-get install -y g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
+
+    - name: Install Risc Cross-Compilers
+      if: matrix.host == 'riscv64-linux-gnu'
+      run: |
+        sudo apt-get install -y g++-riscv64-linux-gnu binutils-riscv64-linux-gnu
+
+    - name: Install and Set GCC 9
+      # if: matrix.host == 'x86_64-pc-linux-gnu'
+      run: |
+        sudo apt-get install -y gcc-9 g++-9
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 100
+        gcc --version
+
+    - name: Install and Set GCC 9 arm
+      if: matrix.host == 'aarch64-linux-gnu'
+      run: |
+        sudo apt-get install -y gcc-9-aarch64-linux-gnu g++-9-aarch64-linux-gnu
+        # Set ARM64 defaults to GCC 9
+        sudo update-alternatives --install /usr/bin/aarch64-linux-gnu-gcc aarch64-linux-gnu-gcc /usr/bin/aarch64-linux-gnu-gcc-9 100
+        sudo update-alternatives --install /usr/bin/aarch64-linux-gnu-g++ aarch64-linux-gnu-g++ /usr/bin/aarch64-linux-gnu-g++-9 100
+        gcc --version
+
+    - name: Install and Set GCC 9 risc
+      if: matrix.host == 'riscv64-linux-gnu'
+      run: |
+         sudo apt-get install -y gcc-9-riscv64-linux-gnu g++-9-riscv64-linux-gnu
+         # Set ARM64 defaults to GCC 9
+         sudo update-alternatives --install /usr/bin/riscv64-linux-gnu-gcc riscv64-linux-gnu-gcc /usr/bin/riscv64-linux-gnu-gcc-9 100
+         sudo update-alternatives --install /usr/bin/riscv64-linux-gnu-g++ riscv64-linux-gnu-g++ /usr/bin/riscv64-linux-gnu-g++-9 100
+         gcc --version
+
+    - name: Downgrade Autoconf to 2.69
+      run: |
+        sudo apt-get install -y autoconf2.69
+        sudo update-alternatives --install /usr/bin/autoconf autoconf /usr/bin/autoconf2.69 100
+        sudo update-alternatives --install /usr/bin/autoreconf autoreconf /usr/bin/autoreconf2.69 100
+        sudo update-alternatives --install /usr/bin/autoheader autoheader /usr/bin/autoheader2.69 100
+        autoconf --version
+
+    - name: Workaround for broken GMP download URL
+      if: steps.depends-cache.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p depends/sources
+        curl -L "https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz" -o depends/sources/gmp-6.1.2.tar.xz
+
+    - name: Fix Script Permissions
+      run: |
+        chmod -R +x .
+        chmod +x autogen.sh
+
+    - name: Build Depends
+      run: make -C depends HOST=${{ matrix.host }} -j$(nproc)
+
+    - name: Run Autogen
+      run: ./autogen.sh
+
+    - name: Configure Build (Linux)
+      run: |
+        sed -i 's/\[__gmpn_sub_n\]/__gmpn_sub_n/g' configure
+        ./configure --prefix=`pwd`/depends/${{ matrix.host }}
+                            
+    - name: Compile
+      run: make -j$(nproc)
+
+    - name: Package Artifacts
+      id: package
+      run: |
+        # Fix dubious ownership error when running git commands in GitHub Actions
+        git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        
+        # Extract short commit hash
+        COMMIT_HASH=$(git rev-parse --short HEAD)
+        echo "commit_hash=$COMMIT_HASH" >> $GITHUB_ENV
+        
+        # Create a staging directory
+        STAGING_DIR="abjj-${COMMIT_HASH}-${{ matrix.host }}"
+        mkdir -p "$STAGING_DIR"
+        
+        # Copy compiled binaries (ignoring errors if a specific binary wasn't compiled)
+        cp src/uiddd src/uidd-cli src/uidd-tx src/qt/uidd-qt "$STAGING_DIR/" 2>/dev/null || :
+        
+        # Compress into tar.gz
+        tar -czvf "${STAGING_DIR}.tar.gz" "$STAGING_DIR"
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: abjj-${{ env.commit_hash }}-${{ matrix.host }}
+        path: abjj-${{ env.commit_hash }}-${{ matrix.host }}.tar.gz
