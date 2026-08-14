@@ -1,0 +1,110 @@
+name: UIDD WIN
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch: 
+
+jobs:
+  build-ubuntu:
+    name: Build windows
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+          submodules: recursive 
+
+    - name: Cache depends directory
+      uses: actions/cache@v4
+      id: depends-cache
+      with:
+        path: |
+          depends/sources
+          depends/built
+          depends/x86_64-w64-mingw32
+        # The cache key changes if any package version in the .mk files changes
+        key: ${{ runner.os }}-depends-win64-${{ hashFiles('depends/packages/*.mk', 'depends/Makefile') }}
+        restore-keys: |
+          ${{ runner.os }}-depends-win64-
+ 
+    - name: Install Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libtool autotools-dev automake pkg-config bsdmainutils python3
+        sudo apt install build-essential libtool autotools-dev automake pkg-config bsdmainutils curl git
+        sudo apt install nsis
+        # sudo apt install g++-mingw-w64-x86-64-posix
+        # sudo update-alternatives --config x86_64-w64-mingw32-g++ # Set the default mingw32 g++ compiler option to posix.
+        
+    - name: Workaround for broken GMP download URL
+      run: |
+        mkdir -p depends/sources
+        curl -L "https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz" -o depends/sources/gmp-6.1.2.tar.xz
+      
+    - name: Install and Set GCC 9 as Default
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-9 g++-9
+        
+        # Set GCC 9 as the highest priority alternative
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 100
+        
+        # Verify the active version
+        gcc --version
+        g++ --version
+     
+    # NEW STEP GOES HERE
+    - name: Downgrade Autoconf to 2.69
+      run: |
+        sudo apt-get install -y autoconf2.69
+        sudo update-alternatives --install /usr/bin/autoconf autoconf /usr/bin/autoconf2.69 100
+        sudo update-alternatives --install /usr/bin/autoreconf autoreconf /usr/bin/autoreconf2.69 100
+        sudo update-alternatives --install /usr/bin/autoheader autoheader /usr/bin/autoheader2.69 100
+        autoconf --version
+
+    - name: Set MinGW-w64 compiler to POSIX
+      run: |
+          sudo apt install g++-mingw-w64-x86-64
+          # sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+          sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+
+    - name: Install Core & Crypto Dependencies
+      run: |
+        sudo chmod -R +x .
+        cd depends 
+        make HOST=x86_64-w64-mingw32 -j$(nproc)
+   
+    - name: Run Autogen
+      run: ./autogen.sh
+
+    - name: Configure Build
+      run: |
+        sed -i 's/\[__gmpn_sub_n\]/__gmpn_sub_n/g' configure
+        ./configure --prefix=`pwd`/depends/x86_64-w64-mingw32
+
+
+    - name: Patch gmtime_r for Windows cross-compilation
+      run: |
+          sed -i 's/gmtime_r(&time_val, &ts);/#ifdef _WIN32\n        gmtime_s(\&ts, \&time_val);\n#else\n        gmtime_r(\&time_val, \&ts);\n#endif/g' src/util/time.cpp
+
+    - name: Compile
+      run: make -j$(nproc)
+
+    
+    # - name: Run Tests (Optional)
+    #   run: make check
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: uidd-win-binaries
+        path: |
+          src/uiddd.exe
+          src/uidd-cli.exe
+          src/uidd-tx.exe
+          src/qt/uidd-qt.exe
