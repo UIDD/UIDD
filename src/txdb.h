@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2009-2020 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,8 +12,8 @@
 #include <primitives/block.h>
 #include <libdevcore/Common.h>
 #include <libdevcore/FixedHash.h>
+#include <index/disktxpos.h>
 
-#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -22,9 +22,9 @@
 class CBlockIndex;
 class CCoinsViewDBCursor;
 class uint256;
+class ChainstateManager;
 struct CHeightTxIndexKey;
 struct CHeightTxIndexIteratorKey;
-#ifdef ENABLE_BITCORE_RPC
 //////////////////////////////////// //uidd
 struct CAddressIndexKey;
 struct CAddressUnspentKey;
@@ -34,7 +34,6 @@ struct CTimestampIndexKey;
 struct CTimestampBlockIndexKey;
 struct CTimestampBlockIndexValue;
 ////////////////////////////////////
-#endif
 
 using valtype = std::vector<unsigned char>;
 
@@ -61,36 +60,16 @@ static const int64_t max_filter_index_cache = 1024;
 //! Max memory allocated to coin DB specific cache (MiB)
 static const int64_t nMaxCoinsDBCache = 8;
 
-struct CDiskTxPos : public FlatFilePos
-{
-    unsigned int nTxOffset; // after header
-
-    ADD_SERIALIZE_METHODS;
-
-    template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITEAS(FlatFilePos, *this);
-        READWRITE(VARINT(nTxOffset));
-    }
-
-    CDiskTxPos(const FlatFilePos &blockIn, unsigned int nTxOffsetIn) : FlatFilePos(blockIn.nFile, blockIn.nPos), nTxOffset(nTxOffsetIn) {
-    }
-
-    CDiskTxPos() {
-        SetNull();
-    }
-
-    void SetNull() {
-        FlatFilePos::SetNull();
-        nTxOffset = 0;
-    }
-};
+// Actually declared in validation.cpp; can't include because of circular dependency.
+extern RecursiveMutex cs_main;
 
 /** CCoinsView backed by the coin database (chainstate/) */
 class CCoinsViewDB final : public CCoinsView
 {
 protected:
-    CDBWrapper db;
+    std::unique_ptr<CDBWrapper> m_db;
+    fs::path m_ldb_path;
+    bool m_is_memory;
 public:
     /**
      * @param[in] ldb_path    Location in the filesystem where leveldb data will be stored.
@@ -102,33 +81,14 @@ public:
     uint256 GetBestBlock() const override;
     std::vector<uint256> GetHeadBlocks() const override;
     bool BatchWrite(CCoinsMap &mapCoins, const uint256 &hashBlock) override;
-    CCoinsViewCursor *Cursor() const override;
+    std::unique_ptr<CCoinsViewCursor> Cursor() const override;
 
     //! Attempt to update from an older database format. Returns whether an error occurred.
     bool Upgrade();
     size_t EstimateSize() const override;
-};
 
-/** Specialization of CCoinsViewCursor to iterate over a CCoinsViewDB */
-class CCoinsViewDBCursor: public CCoinsViewCursor
-{
-public:
-    ~CCoinsViewDBCursor() {}
-
-    bool GetKey(COutPoint &key) const override;
-    bool GetValue(Coin &coin) const override;
-    unsigned int GetValueSize() const override;
-
-    bool Valid() const override;
-    void Next() override;
-
-private:
-    CCoinsViewDBCursor(CDBIterator* pcursorIn, const uint256 &hashBlockIn):
-        CCoinsViewCursor(hashBlockIn), pcursor(pcursorIn) {}
-    std::unique_ptr<CDBIterator> pcursor;
-    std::pair<char, COutPoint> keyTmp;
-
-    friend class CCoinsViewDB;
+    //! Dynamically alter the underlying leveldb cache size.
+    void ResizeCache(size_t new_cache_size) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
 };
 
 /** Access to the block database (blocks/index/) */
@@ -162,7 +122,7 @@ public:
      */
     int ReadHeightIndex(int low, int high, int minconf,
             std::vector<std::vector<uint256>> &blocksOfHashes,
-            std::set<dev::h160> const &addresses);
+            std::set<dev::h160> const &addresses, ChainstateManager &chainman);
     bool EraseHeightIndex(const unsigned int &height);
     bool WipeHeightIndex();
 
@@ -172,7 +132,12 @@ public:
     bool ReadStakeIndex(unsigned int high, unsigned int low, std::vector<uint160> addresses);
     bool EraseStakeIndex(unsigned int height);
 
-#ifdef ENABLE_BITCORE_RPC
+    bool WriteDelegateIndex(unsigned int height, uint160 address, uint8_t fee);
+    bool ReadDelegateIndex(unsigned int height, uint160& address, uint8_t& fee);
+    bool EraseDelegateIndex(unsigned int height);
+
+    bool EraseBlockIndex(const std::vector<uint256>&vect);
+
     // Block explorer database functions
     bool WriteAddressIndex(const std::vector<std::pair<CAddressIndexKey, CAmount> > &vect);
     bool EraseAddressIndex(const std::vector<std::pair<CAddressIndexKey, CAmount> > &vect);
@@ -183,13 +148,12 @@ public:
     bool ReadAddressUnspentIndex(uint256 addressHash, int type,
                                 std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > &vect);
     bool WriteTimestampIndex(const CTimestampIndexKey &timestampIndex);
-    bool ReadTimestampIndex(const unsigned int &high, const unsigned int &low, const bool fActiveOnly, std::vector<std::pair<uint256, unsigned int> > &vect);
+    bool ReadTimestampIndex(const unsigned int &high, const unsigned int &low, const bool fActiveOnly, std::vector<std::pair<uint256, unsigned int> > &vect, ChainstateManager & chainman);
     bool WriteTimestampBlockIndex(const CTimestampBlockIndexKey &blockhashIndex, const CTimestampBlockIndexValue &logicalts);
     bool ReadTimestampBlockIndex(const uint256 &hash, unsigned int &logicalTS);
     bool ReadSpentIndex(CSpentIndexKey &key, CSpentIndexValue &value);
     bool UpdateSpentIndex(const std::vector<std::pair<CSpentIndexKey, CSpentIndexValue> >&vect);
-    bool blockOnchainActive(const uint256 &hash);
-#endif
+    bool blockOnchainActive(const uint256 &hash, ChainstateManager &chainman);
 
     //////////////////////////////////////////////////////////////////////////////
 };
@@ -258,7 +222,6 @@ struct CHeightTxIndexKey {
     }
 };
 
-#ifdef ENABLE_BITCORE_RPC
 struct CTimestampIndexIteratorKey {
     unsigned int timestamp;
 
@@ -428,15 +391,7 @@ struct CAddressUnspentValue {
     int blockHeight;
     bool coinStake;
 
-    ADD_SERIALIZE_METHODS;
-
-    template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITE(satoshis);
-        READWRITE(*(CScriptBase*)(&script));
-        READWRITE(blockHeight);
-        READWRITE(coinStake);
-    }
+    SERIALIZE_METHODS(CAddressUnspentValue, obj) { READWRITE(obj.satoshis, *(CScriptBase*)(&obj.script), obj.blockHeight, obj.coinStake); }
 
     CAddressUnspentValue(CAmount sats, CScript scriptPubKey, int height, bool isStake) {
         satoshis = sats;
@@ -594,7 +549,6 @@ struct CAddressIndexIteratorKey {
         hashBytes.SetNull();
     }
 };
-#endif
 ////////////////////////////////////////////////////////////
 
 #endif // BITCOIN_TXDB_H

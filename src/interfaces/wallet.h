@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Bitcoin Core developers
+// Copyright (c) 2018-2020 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,10 +6,12 @@
 #define BITCOIN_INTERFACES_WALLET_H
 
 #include <amount.h>                    // For CAmount
+#include <interfaces/chain.h>          // For ChainClient
 #include <pubkey.h>                    // For CKeyID and CScriptID (definitions needed in CTxDestination instantiation)
 #include <script/standard.h>           // For CTxDestination
 #include <support/allocators/secure.h> // For SecureString
-#include <ui_interface.h>              // For ChangeType
+#include <util/message.h>
+#include <util/ui_change_type.h>
 
 #include <functional>
 #include <map>
@@ -24,12 +26,15 @@ class CCoinControl;
 class CFeeRate;
 class CKey;
 class CWallet;
-enum isminetype : unsigned int;
 enum class FeeReason;
-typedef uint8_t isminefilter;
-
 enum class OutputType;
+enum class TransactionError;
+enum isminetype : unsigned int;
 struct CRecipient;
+struct PartiallySignedTransaction;
+struct WalletContext;
+struct bilingual_str;
+typedef uint8_t isminefilter;
 
 namespace interfaces {
 
@@ -42,6 +47,11 @@ struct WalletTxStatus;
 struct TokenInfo;
 struct TokenTx;
 struct ContractBookData;
+struct DelegationInfo;
+struct DelegationDetails;
+struct SuperStakerInfo;
+struct DelegationStakerInfo;
+struct SignDelegation;
 
 
 using WalletOrderForm = std::vector<std::pair<std::string, std::string>>;
@@ -85,10 +95,10 @@ public:
     virtual bool getNewDestination(const OutputType type, const std::string label, CTxDestination& dest) = 0;
 
     //! Get public key.
-    virtual bool getPubKey(const CKeyID& address, CPubKey& pub_key) = 0;
+    virtual bool getPubKey(const CScript& script, const CKeyID& address, CPubKey& pub_key) = 0;
 
-    //! Get private key.
-    virtual bool getPrivKey(const CKeyID& address, CKey& key) = 0;
+    //! Sign message
+    virtual SigningResult signMessage(const std::string& message, const PKHash& pkhash, std::string& str_sig) = 0;
 
     //! Return whether wallet has private key.
     virtual bool isSpendable(const CTxDestination& dest) = 0;
@@ -111,18 +121,14 @@ public:
     //! Get wallet address list.
     virtual std::vector<WalletAddress> getAddresses() = 0;
 
-    //! Add scripts to key store so old so software versions opening the wallet
-    //! database can detect payments to newer address types.
-    virtual void learnRelatedScripts(const CPubKey& key, OutputType type) = 0;
+    //! Get receive requests.
+    virtual std::vector<std::string> getAddressReceiveRequests() = 0;
 
-    //! Add dest data.
-    virtual bool addDestData(const CTxDestination& dest, const std::string& key, const std::string& value) = 0;
+    //! Save or remove receive request.
+    virtual bool setAddressReceiveRequest(const CTxDestination& dest, const std::string& id, const std::string& value) = 0;
 
-    //! Erase dest data.
-    virtual bool eraseDestData(const CTxDestination& dest, const std::string& key) = 0;
-
-    //! Get dest values with prefix.
-    virtual std::vector<std::string> getDestValues(const std::string& prefix) = 0;
+    //! Display address on external signer
+    virtual bool displayAddress(const CTxDestination& dest) = 0;
 
     //! Lock coin.
     virtual void lockCoin(const COutPoint& output) = 0;
@@ -142,13 +148,12 @@ public:
         bool sign,
         int& change_pos,
         CAmount& fee,
-        std::string& fail_reason) = 0;
+        bilingual_str& fail_reason) = 0;
 
     //! Commit transaction.
-    virtual bool commitTransaction(CTransactionRef tx,
+    virtual void commitTransaction(CTransactionRef tx,
         WalletValueMap value_map,
-        WalletOrderForm order_form,
-        std::string& reject_reason) = 0;
+        WalletOrderForm order_form) = 0;
 
     //! Return whether transaction can be abandoned.
     virtual bool transactionCanBeAbandoned(const uint256& txid) = 0;
@@ -162,8 +167,7 @@ public:
     //! Create bump transaction.
     virtual bool createBumpTransaction(const uint256& txid,
         const CCoinControl& coin_control,
-        CAmount total_fee,
-        std::vector<std::string>& errors,
+        std::vector<bilingual_str>& errors,
         CAmount& old_fee,
         CAmount& new_fee,
         CMutableTransaction& mtx) = 0;
@@ -174,7 +178,7 @@ public:
     //! Commit bump transaction.
     virtual bool commitBumpTransaction(const uint256& txid,
         CMutableTransaction&& mtx,
-        std::vector<std::string>& errors,
+        std::vector<bilingual_str>& errors,
         uint256& bumped_txid) = 0;
 
     //! Get a transaction.
@@ -199,11 +203,19 @@ public:
         bool& in_mempool,
         int& num_blocks) = 0;
 
+    //! Fill PSBT.
+    virtual TransactionError fillPSBT(int sighash_type,
+        bool sign,
+        bool bip32derivs,
+        size_t* n_signed,
+        PartiallySignedTransaction& psbtx,
+        bool& complete) = 0;
+
     //! Get balances.
     virtual WalletBalances getBalances() = 0;
 
     //! Get balances if possible without blocking.
-    virtual bool tryGetBalances(WalletBalances& balances, int& num_blocks) = 0;
+    virtual bool tryGetBalances(WalletBalances& balances, uint256& block_hash) = 0;
 
     //! Get balance.
     virtual CAmount getBalance() = 0;
@@ -258,20 +270,23 @@ public:
     // Return whether the wallet is blank.
     virtual bool canGetAddresses() = 0;
 
-    // check if a certain wallet flag is set.
-    virtual bool IsWalletFlagSet(uint64_t flag) = 0;
+    // Return whether private keys enabled.
+    virtual bool privateKeysDisabled() = 0;
+
+    // Return whether wallet uses an external signer.
+    virtual bool hasExternalSigner() = 0;
 
     // Get default address type.
     virtual OutputType getDefaultAddressType() = 0;
-
-    // Get default change type.
-    virtual OutputType getDefaultChangeType() = 0;
 
     //! Get max tx fee.
     virtual CAmount getDefaultMaxTxFee() = 0;
 
     // Remove wallet.
     virtual void remove() = 0;
+
+    //! Return whether is a legacy wallet
+    virtual bool isLegacy() = 0;
 
     //! Add wallet token entry.
     virtual bool addTokenEntry(const TokenInfo &token) = 0;
@@ -330,6 +345,60 @@ public:
     //! Set contract book data.
     virtual bool setContractBook(const std::string& address, const std::string& name, const std::string& abi) = 0;
 
+    //! Restore wallet delegations.
+    virtual uint32_t restoreDelegations() = 0;
+
+    //! Add wallet delegation entry.
+    virtual bool addDelegationEntry(const DelegationInfo &delegation) = 0;
+
+    //! Check if exist wallet delegation entry.
+    virtual bool existDelegationEntry(const DelegationInfo &delegation) = 0;
+
+    //! Get delegation information.
+    virtual DelegationInfo getDelegation(const uint256& id) = 0;
+
+    //! Get delegation information from contract.
+    virtual DelegationInfo getDelegationContract(const std::string &sHash, bool& validated, bool& contractRet) = 0;
+
+    //! Get delegation details for address.
+    virtual DelegationDetails getDelegationDetails(const std::string &sAddress) = 0;
+
+    //! Get list of all delegations.
+    virtual std::vector<DelegationInfo> getDelegations() = 0;
+
+    //! Remove wallet delegation entry.
+    virtual bool removeDelegationEntry(const std::string &sHash) = 0;
+
+    //! Set delegation entry removed.
+    virtual bool setDelegationRemoved(const std::string &sHash, const std::string &sTxid) = 0;
+
+    //! Restore wallet super stakers.
+    virtual uint32_t restoreSuperStakers() = 0;
+
+    //! Exist super staker.
+    virtual bool existSuperStaker(const std::string &sAddress) = 0;
+
+    //! Get super staker information.
+    virtual SuperStakerInfo getSuperStaker(const uint256& id) = 0;
+
+    //! Get super staker recommended config.
+    virtual SuperStakerInfo getSuperStakerRecommendedConfig() = 0;
+
+    //! Get list of all super stakers.
+    virtual std::vector<SuperStakerInfo> getSuperStakers() = 0;
+
+    //! Add wallet super staker entry.
+    virtual bool addSuperStakerEntry(const SuperStakerInfo &superStaker) = 0;
+
+    //! Remove wallet super staker entry.
+    virtual bool removeSuperStakerEntry(const std::string &sHash) = 0;
+
+    //! Get the super staker weight
+    virtual uint64_t getSuperStakerWeight(const uint256& id) = 0;
+
+    //! Is super staker staking
+    virtual bool isSuperStakerStaking(const uint256& id, CAmount& delegationsWeight) = 0;
+
     //! Try get the stake weight
     virtual bool tryGetStakeWeight(uint64_t& nWeight) = 0;
 
@@ -350,6 +419,30 @@ public:
 
     //! Get wallet enabled for staking
     virtual bool getEnabledStaking() = 0;
+
+    //! Get wallet enabled for super staking
+    virtual bool getEnabledSuperStaking() = 0;
+
+    //! Get a delegation from super staker.
+    virtual DelegationStakerInfo getDelegationStaker(const uint160& id) = 0;
+
+    //! Get list of all delegations for super stakers.
+    virtual std::vector<DelegationStakerInfo> getDelegationsStakers() = 0;
+
+    //! Get staker address balance.
+    virtual bool getStakerAddressBalance(const std::string& staker, CAmount& balance, CAmount& stake, CAmount& weight) = 0;
+
+    //! Get add delegation data to sign.
+    virtual bool getAddDelegationData(const std::string& psbt, std::map<int, SignDelegation>& signData, std::string& error) = 0;
+
+    //! Set signed add delegation data.
+    virtual bool setAddDelegationData(std::string& psbt, const std::map<int, SignDelegation>& signData, std::string& error) = 0;
+
+    //! Set staker ledger id.
+    virtual void setStakerLedgerId(const std::string& ledgerId) = 0;
+
+    //! Get staker ledger id.
+    virtual std::string getStakerLedgerId() = 0;
 
     //! Register handler for unload message.
     using UnloadFn = std::function<void()>;
@@ -397,6 +490,49 @@ public:
         const std::string& abi,
         ChangeType status)>;
     virtual std::unique_ptr<Handler> handleContractBookChanged(ContractBookChangedFn fn) = 0;
+
+    //! Register handler for delegation changed messages.
+    using DelegationChangedFn = std::function<void(const uint256& id, ChangeType status)>;
+    virtual std::unique_ptr<Handler> handleDelegationChanged(DelegationChangedFn fn) = 0;
+
+    //! Register handler for super staker changed messages.
+    using SuperStakerChangedFn = std::function<void(const uint256& id, ChangeType status)>;
+    virtual std::unique_ptr<Handler> handleSuperStakerChanged(SuperStakerChangedFn fn) = 0;
+
+    //! Register handler for delegations staker changed messages.
+    using DelegationsStakerChangedFn = std::function<void(const uint160& id, ChangeType status)>;
+    virtual std::unique_ptr<Handler> handleDelegationsStakerChanged(DelegationsStakerChangedFn fn) = 0;
+
+    //! Return pointer to internal wallet class, useful for testing.
+    virtual CWallet* wallet() { return nullptr; }
+};
+
+//! Wallet chain client that in addition to having chain client methods for
+//! starting up, shutting down, and registering RPCs, also has additional
+//! methods (called by the GUI) to load and create wallets.
+class WalletClient : public ChainClient
+{
+public:
+    //! Create new wallet.
+    virtual std::unique_ptr<Wallet> createWallet(const std::string& name, const SecureString& passphrase, uint64_t wallet_creation_flags, bilingual_str& error, std::vector<bilingual_str>& warnings) = 0;
+
+   //! Load existing wallet.
+   virtual std::unique_ptr<Wallet> loadWallet(const std::string& name, bilingual_str& error, std::vector<bilingual_str>& warnings) = 0;
+
+   //! Return default wallet directory.
+   virtual std::string getWalletDir() = 0;
+
+   //! Return available wallets in wallet directory.
+   virtual std::vector<std::string> listWalletDir() = 0;
+
+   //! Return interfaces for accessing wallets (if any).
+   virtual std::vector<std::unique_ptr<Wallet>> getWallets() = 0;
+
+   //! Register handler for load wallet messages. This callback is triggered by
+   //! createWallet and loadWallet above, and also triggered when wallets are
+   //! loaded at startup or by RPC.
+   using LoadWalletFn = std::function<void(std::unique_ptr<Wallet> wallet)>;
+   virtual std::unique_ptr<Handler> handleLoadWallet(LoadWalletFn fn) = 0;
 };
 
 //! Information about one wallet address.
@@ -520,9 +656,122 @@ struct ContractBookData
     std::string abi;
 };
 
+// Wallet delegation information.
+struct DelegationInfo
+{
+    std::string delegate_address;
+    std::string staker_address;
+    std::string staker_name;
+    uint8_t fee = 0;
+    int64_t time = 0;
+    int64_t block_number = -1;
+    uint256 hash;
+    uint256 create_tx_hash;
+    uint256 remove_tx_hash;
+};
+
+// Delegation details.
+struct DelegationDetails
+{
+    // Wallet delegation details
+    bool w_entry_exist = false;
+    std::string w_delegate_address;
+    std::string w_staker_address;
+    std::string w_staker_name;
+    uint8_t w_fee = 0;
+    int64_t w_time = 0;
+    int64_t w_block_number = -1;
+    uint256 w_hash;
+    uint256 w_create_tx_hash;
+    uint256 w_remove_tx_hash;
+
+    // Wallet create tx details
+    bool w_create_exist = false;
+    bool w_create_in_main_chain = false;
+    bool w_create_in_mempool = false;
+    bool w_create_abandoned = false;
+
+    // Wallet remove tx details
+    bool w_remove_exist = false;
+    bool w_remove_in_main_chain = false;
+    bool w_remove_in_mempool = false;
+    bool w_remove_abandoned = false;
+
+    // Delegation contract details
+    std::string c_delegate_address;
+    std::string c_staker_address;
+    uint8_t c_fee = 0;
+    int64_t c_block_number = -1;
+    bool c_entry_exist = false;
+    bool c_contract_return = false;
+
+    // To delegation info
+    DelegationInfo toInfo(bool fromWallet = true)
+    {
+        interfaces::DelegationInfo info;
+        info.delegate_address = fromWallet ? w_delegate_address : c_delegate_address;
+        info.staker_address = fromWallet ? w_staker_address : c_staker_address;
+        info.fee =  fromWallet ? w_fee : c_fee;
+        info.block_number = fromWallet ? w_block_number : c_block_number;
+        info.hash = w_hash;
+        info.time = w_time;
+        info.create_tx_hash = w_create_tx_hash;
+        info.remove_tx_hash = w_remove_tx_hash;
+        info.staker_name = w_staker_name;
+        return info;
+    }
+};
+
+// Super staker address list
+enum SuperStakerAddressList
+{
+    AcceptAll = 0,
+    AllowList = 1,
+    ExcludeList = 2
+};
+
+// Wallet super staker information.
+struct SuperStakerInfo
+{
+    uint256 hash;
+    std::string staker_address;
+    std::string staker_name;
+    int64_t time = 0;
+    bool custom_config = false;
+    uint8_t min_fee = 0;
+    CAmount min_delegate_utxo = 0;
+    std::vector<std::string> delegate_address_list;
+    int delegate_address_type = 0;
+};
+
+// Wallet delegation staker information.
+struct DelegationStakerInfo
+{
+    std::string delegate_address;
+    std::string staker_address;
+    std::string PoD;
+    uint8_t fee = 0;
+    int64_t time = 0;
+    int64_t block_number = -1;
+    CAmount weight = 0;
+    uint160 hash;
+};
+
+// Sign PoD wallet delegation data.
+struct SignDelegation
+{
+    std::string delegate;
+    std::string staker;
+    std::string PoD;
+};
+
 //! Return implementation of Wallet interface. This function is defined in
 //! dummywallet.cpp and throws if the wallet component is not compiled.
 std::unique_ptr<Wallet> MakeWallet(const std::shared_ptr<CWallet>& wallet);
+
+//! Return implementation of ChainClient interface for a wallet client. This
+//! function will be undefined in builds where ENABLE_WALLET is false.
+std::unique_ptr<WalletClient> MakeWalletClient(Chain& chain, ArgsManager& args);
 
 } // namespace interfaces
 

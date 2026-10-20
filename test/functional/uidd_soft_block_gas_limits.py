@@ -3,7 +3,7 @@
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from test_framework.script import *
-from test_framework.mininode import *
+from test_framework.p2p import *
 from test_framework.address import *
 from test_framework.uidd import *
 import sys
@@ -15,14 +15,14 @@ class UiddSoftMinerGasRelatedLimitsTest(BitcoinTestFramework):
         self.setup_clean_chain = True
         self.num_nodes = 8
         self.extra_args = [
-            ["-staker-soft-block-gas-limit=1000000000", '-rpcmaxgasprice=10000000'],
-            ["-staker-soft-block-gas-limit=400000", '-rpcmaxgasprice=10000000'],
-            ["-staker-soft-block-gas-limit=0", '-rpcmaxgasprice=10000000'],
-            ["-staker-max-tx-gas-limit=100000000", '-rpcmaxgasprice=10000000'],
-            ["-staker-max-tx-gas-limit=100000", '-rpcmaxgasprice=10000000'],
-            ["-staker-max-tx-gas-limit=0", '-rpcmaxgasprice=10000000'],
-            ["-staker-min-tx-gas-price=0", '-rpcmaxgasprice=10000000'],
-            ["-staker-min-tx-gas-price=0.0001", '-rpcmaxgasprice=10000000']
+            ["-staker-soft-block-gas-limit=1000000000", '-rpcmaxgasprice=10000000', '-acceptnonstdtxn'],
+            ["-staker-soft-block-gas-limit=400000", '-rpcmaxgasprice=10000000', '-acceptnonstdtxn'],
+            ["-staker-soft-block-gas-limit=0", '-rpcmaxgasprice=10000000', '-acceptnonstdtxn'],
+            ["-staker-max-tx-gas-limit=100000000", '-rpcmaxgasprice=10000000', '-acceptnonstdtxn'],
+            ["-staker-max-tx-gas-limit=100000", '-rpcmaxgasprice=10000000', '-acceptnonstdtxn'],
+            ["-staker-max-tx-gas-limit=0", '-rpcmaxgasprice=10000000', '-acceptnonstdtxn'],
+            ["-staker-min-tx-gas-price=0", '-rpcmaxgasprice=10000000', '-acceptnonstdtxn'],
+            ["-staker-min-tx-gas-price=0.0001", '-rpcmaxgasprice=10000000', '-acceptnonstdtxn']
         ]
 
     def skip_test_if_missing_module(self):
@@ -65,11 +65,11 @@ class UiddSoftMinerGasRelatedLimitsTest(BitcoinTestFramework):
     def run_test(self):
         for i in range(len(self.nodes)):
             for j in range(i+1, len(self.nodes)):
-                connect_nodes_bi(self.nodes, i, j)
+                self.connect_nodes(i, j)
         for node in self.nodes:
             node.generate(10)
             self.sync_all()
-        self.nodes[0].generate(COINBASE_MATURITY)
+        generatesynchronized(self.nodes[0], COINBASE_MATURITY, None, self.nodes)
         self.sync_all()
         """
         pragma solidity ^0.4.12;

@@ -3,7 +3,7 @@
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from test_framework.script import *
-from test_framework.mininode import *
+from test_framework.p2p import *
 from test_framework.address import *
 from test_framework.uidd import *
 
@@ -12,6 +12,9 @@ class UiddEVMConstantinopleActivationTest(BitcoinTestFramework):
         self.setup_clean_chain = True
         self.num_nodes = 1
         self.extra_args = [['-txindex=1', '-logevents=1', '-constantinopleheight=552']]
+
+    def skip_test_if_missing_module(self):
+        self.skip_if_no_wallet()
 
     def run_test(self):
         self.nodes[0].generate(COINBASE_MATURITY+50)

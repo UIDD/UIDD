@@ -2,7 +2,10 @@
 #include <util/system.h>
 #include <validation.h>
 #include <chainparams.h>
+#include <script/script.h>
 #include <uidd/uiddstate.h>
+#include <libevm/VMFace.h>
+#include <validation.h>
 
 using namespace std;
 using namespace dev;
@@ -19,7 +22,7 @@ UiddState::UiddState() : dev::eth::State(dev::Invalid256, dev::OverlayDB(), dev:
     stateUTXO = SecureTrieDB<Address, OverlayDB>(&dbUTXO);
 }
 
-ResultExecute UiddState::execute(EnvInfo const& _envInfo, SealEngineFace const& _sealEngine, UiddTransaction const& _t, Permanence _p, OnOpFunc const& _onOp){
+ResultExecute UiddState::execute(EnvInfo const& _envInfo, SealEngineFace const& _sealEngine, UiddTransaction const& _t, CChain& _chain, Permanence _p, OnOpFunc const& _onOp){
 
     assert(_t.getVersion().toRaw() == VersionVM::GetEVMDefault().toRaw());
 
@@ -55,7 +58,7 @@ ResultExecute UiddState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         startGasUsed = _envInfo.gasUsed();
         if (!e.execute()){
             e.go(onOp);
-            if(ChainActive().Height() >= consensusParams.QIP7Height){
+            if(_chain.Height() >= consensusParams.QIP7Height){
             	validateTransfersWithChangeLog();
             }
         } else {
@@ -66,6 +69,8 @@ ResultExecute UiddState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         if (_p == Permanence::Reverted){
             m_cache.clear();
             cacheUTXO.clear();
+            m_changeLog.clear();
+            m_unchangedCacheEntries.clear();
         } else {
             deleteAccounts(_sealEngine.deleteAddresses);
             if(res.excepted == TransactionException::None){
@@ -92,7 +97,7 @@ ResultExecute UiddState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         printfErrorLog(dev::eth::toTransactionException(_e));
         res.excepted = dev::eth::toTransactionException(_e);
         res.gasUsed = _t.gas();
-        if(ChainActive().Height() < consensusParams.nFixUTXOCacheHFHeight  && _p != Permanence::Reverted){
+        if(_chain.Height() < consensusParams.nFixUTXOCacheHFHeight  && _p != Permanence::Reverted){
             deleteAccounts(_sealEngine.deleteAddresses);
             commit(CommitBehaviour::RemoveEmptyAccounts);
         } else {
@@ -284,6 +289,16 @@ void UiddState::validateTransfersWithChangeLog(){
 	}
 
 	transfers=validatedTransfers;
+}
+
+void UiddState::deployDelegationsContract(){
+    dev::Address delegationsAddress = uintToh160(Params().GetConsensus().delegationsAddress);
+    if(!UiddState::addressInUse(delegationsAddress)){
+        UiddState::createContract(delegationsAddress);
+        UiddState::setCode(delegationsAddress, bytes{fromHex(DELEGATIONS_CONTRACT_CODE)}, UiddState::version(delegationsAddress));
+        commit(CommitBehaviour::RemoveEmptyAccounts);
+        db().commit();
+    }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////
 CTransaction CondensingTX::createCondensingTX(){

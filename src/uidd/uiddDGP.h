@@ -28,7 +28,7 @@ class UiddDGP {
     
 public:
 
-    UiddDGP(UiddState* _state, bool _dgpevm = true) : dgpevm(_dgpevm), state(_state) { initDataSchedule(); }
+    UiddDGP(UiddState* _state, CChainState& _chainstate, bool _dgpevm = true) : dgpevm(_dgpevm), state(_state), chainstate(_chainstate) { initDataSchedule(); }
 
     dev::eth::EVMSchedule getGasSchedule(int blockHeight);
 
@@ -75,6 +75,8 @@ private:
     bool dgpevm;
 
     const UiddState* state;
+
+    CChainState& chainstate;
 
     dev::Address templateContract;
 

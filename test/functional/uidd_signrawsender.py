@@ -6,7 +6,7 @@
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from test_framework.blocktools import *
-from test_framework.mininode import *
+from test_framework.p2p import *
 from test_framework.address import *
 from test_framework.uidd import *
 
@@ -21,7 +21,7 @@ class UiddSignRawSenderTest(BitcoinTestFramework):
 
     def run_test(self):
         coinbase_txes = []
-        block_hashes = self.nodes[0].generate(100+COINBASE_MATURITY)
+        block_hashes = generatesynchronized(self.nodes[0], 100+COINBASE_MATURITY, None, self.nodes)
         for block_hash in block_hashes[:100]:
             coinbase_txid = self.nodes[0].getblock(block_hash)['tx'][0]
             coinbase_txes.append(coinbase_txid)
@@ -29,7 +29,7 @@ class UiddSignRawSenderTest(BitcoinTestFramework):
         self.sync_all()
 
         # Create a contract with a sender address that we CANT sign with
-        tx = self.nodes[0].createrawtransaction([{"txid": coinbase_txes.pop(), "vout": 0}], [{"contract": {"bytecode": "00", "senderAddress": self.nodes[1].getnewaddress()}}])
+        tx = self.nodes[0].createrawtransaction([{"txid": coinbase_txes.pop(), "vout": 0}], [{"contract": {"bytecode": "00", "senderAddress": "qWNXxpNL6GwNCAFCC9RsmUXuXg4ogFX6ay"}}])
         res = self.nodes[0].signrawsendertransactionwithwallet(tx)
         assert(not res['complete'])
         tx = res['hex']
@@ -89,7 +89,7 @@ class UiddSignRawSenderTest(BitcoinTestFramework):
         res = self.nodes[0].signrawtransactionwithwallet(tx)
         assert(res['complete'])
         tx = res['hex']
-        self.nodes[1].sendrawtransaction(tx)
+        self.nodes[1].sendrawtransaction(tx, 0)
         self.sync_all()
         block_hash = self.nodes[0].generate(1)[0]
         self.sync_all()
@@ -110,7 +110,7 @@ class UiddSignRawSenderTest(BitcoinTestFramework):
         res = self.nodes[0].signrawtransactionwithwallet(tx)
         assert(res['complete'])
         tx = res['hex']
-        self.nodes[1].sendrawtransaction(tx)
+        self.nodes[1].sendrawtransaction(tx, 0)
         self.sync_all()
         self.sync_all()
         assert_equal(self.nodes[0].listcontracts()[payable_contract_address], 1)

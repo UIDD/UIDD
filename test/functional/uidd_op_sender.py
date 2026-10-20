@@ -3,7 +3,7 @@
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from test_framework.script import *
-from test_framework.mininode import *
+from test_framework.p2p import *
 from test_framework.uidd import *
 from test_framework.address import *
 from test_framework.blocktools import *
@@ -126,7 +126,10 @@ class UiddOpSenderTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2
-        self.extra_args = [['-opsenderheight=1000000']] * 2
+        self.extra_args = [['-opsenderheight=1000000', '-acceptnonstdtxn']] * 2
+
+    def skip_test_if_missing_module(self):
+        self.skip_if_no_wallet()
 
     def create_op_sender_tx(self, keys, outputs, hashtypes, gasCost, publish=True):
         unspent = self.unspents.pop()
@@ -281,8 +284,8 @@ class UiddOpSenderTest(BitcoinTestFramework):
         # Make sure that gas is refunded to vin0's address
         coinbase_txid = self.nodes[0].getblock(block_hash)['tx'][0]
         coinbase_vout = self.nodes[0].decoderawtransaction(self.nodes[0].gettransaction(coinbase_txid, True)['hex'])['vout']
-        assert_equal(input_txout['address'], coinbase_vout[1]['scriptPubKey']['addresses'][0])
-        assert_equal(input_txout['address'], coinbase_vout[2]['scriptPubKey']['addresses'][0])
+        assert_equal(input_txout['address'], coinbase_vout[1]['scriptPubKey']['address'])
+        assert_equal(input_txout['address'], coinbase_vout[2]['scriptPubKey']['address'])
 
         contract_address = new_contracts[0]
         key = ECKey()
@@ -470,9 +473,9 @@ class UiddOpSenderTest(BitcoinTestFramework):
         self.sync_all()
 
         # Trigger the HF
-        self.restart_node(0, ['-opsenderheight=602'])
-        self.restart_node(1, ['-opsenderheight=602'])
-        connect_nodes_bi(self.nodes, 0, 1)
+        self.restart_node(0, ['-opsenderheight=602', '-acceptnonstdtxn'])
+        self.restart_node(1, ['-opsenderheight=602', '-acceptnonstdtxn'])
+        self.connect_nodes(0, 1)
         
         self.single_op_sender_op_create_tx_test()
         self.single_op_sender_op_call_tx_test()

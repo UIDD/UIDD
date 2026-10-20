@@ -3,7 +3,7 @@ What is Uidd?
 
 Uidd is a decentralized blockchain project built on Bitcoin's UTXO model, with support for Ethereum Virtual Machine based smart contracts, and secured by a proof of stake consensus model. It achieves this through the revolutionary Account Abstraction Layer which allows the EVM to communicate with Uidd's Bitcoin-like UTXO blockchain. For more general information about Uidd as well as links to join our community, go to https://uidd.org
 
-Welcome to the Uidd Ignition Main Network. This is the main network where the tokens hold value and should be guarded very carefully. If you are testing the network, or developing unstable software on Uidd, we highly recommend using either testnet or regtest mode. 
+Welcome to the Uidd Fastlane Main Network. This is the main network where the tokens hold value and should be guarded very carefully. If you are testing the network, or developing unstable software on Uidd, we highly recommend using either testnet or regtest mode. 
 
 The major features of the Uidd network include:
 
@@ -22,13 +22,13 @@ These are some resources that might be helpful in understanding Uidd.
 Basic usage resources:
 
 * [User guide](https://docs.uidd.site/en/)
-* [Uidd-Qt Wallet Tutorial](https://github.com/UIDD/documents/tree/master/en/Uidd-Wallet-Tutorial#uidd-qt-wallet-tutorial)
-* [Uidd staking tutorial](https://github.com/UIDD/documents/tree/master/en/How-to-Stake-with-Uidd)
-* [Uidd tutorial on Raspberry Pi](https://github.com/UIDD/documents/tree/master/en/Uidd-on-Raspberry-Pi)
-* [Running Uidd on Amazon AWS using Uidd AMI](https://github.com/UIDD/documents/tree/master/en/Uidd-AWS)
-* [Encrypting and unlocking wallet](https://github.com/UIDD/documents/tree/master/en/Encrypt-and-Unlock-Uidd-Wallet)
-* [Testnet guide](https://github.com/UIDD/documents/blob/master/en/Testnet-User-Guide.md)
-* [Block explorer](https://scan.uidd.org), [Older explorer](https://explorer.uidd.org)
+* [Uidd-Qt Wallet Tutorial](https://github.com/uiddproject/documents/tree/master/en/Uidd-Wallet-Tutorial#uidd-qt-wallet-tutorial)
+* [Uidd staking tutorial](https://github.com/uiddproject/documents/tree/master/en/How-to-Stake-with-Uidd)
+* [Uidd tutorial on Raspberry Pi](https://github.com/uiddproject/documents/tree/master/en/Uidd-on-Raspberry-Pi)
+* [Running Uidd on Amazon AWS using Uidd AMI](https://github.com/uiddproject/documents/tree/master/en/Uidd-AWS)
+* [Encrypting and unlocking wallet](https://github.com/uiddproject/documents/tree/master/en/Encrypt-and-Unlock-Uidd-Wallet)
+* [Testnet guide](https://github.com/uiddproject/documents/blob/master/en/Testnet-User-Guide.md)
+* [Block explorer](https://uidd.info), [Older explorer](https://explorer.uidd.org)
 
 
 Development resources:
@@ -36,7 +36,7 @@ Development resources:
 * [Uidd Book - A Developer's Guide To UIDD](http://book.uidd.site/en/)
 * [Uidd contract usage](https://docs.uidd.site/en/QRC20-Token-Introduce.html)
 * [Deploying a custom token to Uidd](https://blog.uidd.org/uidd-custom-token-walkthrough-467d725fa27d)
-* [UiddJS document](https://UIDD.github.io/uiddjs-doc/)
+* [UiddJS document](https://uiddproject.github.io/uiddjs-doc/)
 * [Smart contract ICO example](http://book.uidd.site/en/part3/ico.htm)
 * [Early example faucet contract](http://earlz.net/view/2017/06/30/2144/the-uidd-sparknet-faucet)
 
@@ -51,17 +51,17 @@ Developer's Tools
 -----------------
 
 * Smart contract deployment tool
-  * https://github.com/UIDD/solar
+  * https://github.com/uiddproject/solar
 * DApp JavaScript Library
-  * https://github.com/UIDD/uiddjs
+  * https://github.com/uiddproject/uiddjs
 * A toolkit for building uidd light wallets
-  * https://github.com/UIDD/uiddjs-wallet
+  * https://github.com/uiddproject/uiddjs-wallet
 * CORS uiddd RPC proxy for DApp
-  * https://github.com/UIDD/uiddportal
+  * https://github.com/uiddproject/uiddportal
 * Docker images for running uidd services
-  * https://github.com/UIDD/uidd-docker
-* scan.uidd.org API that powers the block explorer and the UIDD Web wallet
-  * https://github.com/UIDD/uiddinfo-api#uiddinfo-api-documentation
+  * https://github.com/uiddproject/uidd-docker
+* uidd.info API that powers the block explorer and the UIDD Web wallet
+  * https://github.com/uiddproject/uiddinfo-api#uiddinfo-api-documentation
 
 
 What is Uidd Core?
@@ -89,17 +89,17 @@ Uidd Core uses a full node model, and thus requires downloading the entire block
 
 ### Uidd Web Wallet
 
-A browser wallet that supports the Ledger hardware wallet, offline cold wallet, and restoration from mobile wallets.
+A browser wallet that supports the Ledger hardware wallet, offline cold wallet, restoration from mobile wallets, creation of QRC20 tokens and QRC1155 NFTs.
 
 Web site https://uiddwallet.org
 
-User documentation https://github.com/UIDD/documents/tree/master/en/UIDD-WebWallet-usage
+User documentation https://github.com/uiddproject/documents/tree/master/en/UIDD-WebWallet-usage
 
 ### Uidd Electrum
 
 A light wallet that supports the Ledger and Trezor hardware wallets and is based on the well-known Electrum wallet software. 
 
-Download: https://github.com/UIDD/uidd-electrum/releases
+Download: https://github.com/uiddproject/uidd-electrum/releases
 
 ### iOS and Android Wallets
 
@@ -107,13 +107,11 @@ These wallets run on mobile devices and synchronize quickly.
 
 Android Download: https://play.google.com/store/apps/details?id=org.uidd.newwallet
 
-iOS Download: https://github.com/UIDD/uidd-ios (open source, deprecated)
+iOS Download: https://github.com/uiddproject/uidd-ios (open source, deprecated)
 
-### Ledger Chrome Wallet
+### Qnekt Chrome Wallet
 
-This light wallet runs in your Chrome browser as a browser extension. This wallet requires a Ledger device to use.
-
-How to install: https://ledger.zendesk.com/hc/en-us/articles/115003776913-How-to-install-and-use-Uidd-with-Ledger
+This light wallet runs in your Chrome browser as a browser extension, based on the popular MetaMask wallet.
 
 
 ### Community Resources
@@ -127,15 +125,14 @@ Make sure to check out these resources as well for more information and to keep 
 *	/r/Uidd on Reddit https://www.reddit.com/r/Uidd/
 *	Uidd.org https://uidd.org
 *	Uidd on Facebook https://www.facebook.com/UiddOfficial/
-*	Uidd Forum https://forum.uidd.org
 
 ### Uidd Smart Contract Limitations
 
 *	EVM smart contracts cannot receive coins from or send coins to any address type other than pay-to-pubkeyhash (starts with Q) addresses. This is due to a limitation in the EVM
 *	Contracts are not allowed to create contracts with an initial endowment of coins. The contract must first be created, and then be sent coins in a separate transaction. Humans are also not allowed to create contracts with an initial endowment of coins.
 *	Although all of the infrastructure is present, Uidd Core does not currently parse Solidity event data. You must parse this yourself using either searchlogs or -record-log-opcodes features.
-*	It is not possible to send a contract coins without also executing the contract. This is also the case of Ethereum. This was promised in earlier discussions and technically does work, but due to lack of time for testing this feature was disabled. We hope to reenable this feature with release of the x86 virtual machine in 2020.
-*	In Uidd there can be multiple addresses used to create a proof-of-stake block. However, the EVM can only see the first output using the coinbase operation in Solidity (this address is also the one registered for the continuous staker rewards after 500 blocks).
+*	It is not possible to send a contract coins without also executing the contract. This is also the case of Ethereum. This was promised in earlier discussions and technically does work, but due to lack of time for testing this feature was disabled.
+*	In Uidd there can be multiple addresses used to create a proof-of-stake block. However, the EVM can only see the first output using the coinbase operation in Solidity (this address is also the one registered for the continuous staker rewards after 2000 blocks).
 
 ----------
 
@@ -143,7 +140,7 @@ Make sure to check out these resources as well for more information and to keep 
 
 ### Validate and Reproduce Binaries
 
-Uidd uses a tool called Gitian to make reproducible builds that can be verified by anyone. Instructions on setting up a Gitian VM and building Uidd are provided in [Gitan Building](https://github.com/UIDD/UIDD/blob/master/doc/gitian-building.md)
+Uidd uses a tool called Gitian to make reproducible builds that can be verified by anyone. Instructions on setting up a Gitian VM and building Uidd are provided in [Gitan Building](https://github.com/uiddproject/uidd/blob/master/doc/gitian-building.md)
 
 ### Build on Ubuntu
 
@@ -159,7 +156,7 @@ This is a quick start script for compiling Uidd on Ubuntu
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
 
-    git clone https://github.com/UIDD/uidd --recursive
+    git clone https://github.com/uiddproject/uidd --recursive
     cd uidd
 
     # Note autogen will prompt to install some more dependencies if needed
@@ -169,7 +166,7 @@ This is a quick start script for compiling Uidd on Ubuntu
     
 ### Build on CentOS
 
-Here is a brief description for compiling Uidd on CentOS, for more details please refer to [the specific document](https://github.com/UIDD/UIDD/blob/master/doc/build-unix.md)
+Here is a brief description for compiling Uidd on CentOS, for more details please refer to [the specific document](https://github.com/uiddproject/uidd/blob/master/doc/build-unix.md)
 
     # Compiling boost manually
     sudo yum install python-devel bzip2-devel
@@ -189,7 +186,7 @@ Here is a brief description for compiling Uidd on CentOS, for more details pleas
     sudo yum install qt5-qttools-devel protobuf-devel qrencode-devel
     
     # Building Uidd
-    git clone --recursive https://github.com/UIDD/UIDD/git
+    git clone --recursive https://github.com/uiddproject/uidd.git
     cd uidd
     ./autogen.sh
     ./configure
@@ -220,7 +217,7 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 
 1. Clone the uidd source code and cd into `uidd`
 
-        git clone --recursive https://github.com/UIDD/UIDD/git
+        git clone --recursive https://github.com/uiddproject/uidd.git
         cd uidd
 
 2.  Build uidd-core:
@@ -246,16 +243,15 @@ License
 
 Uidd is GPLv3 licensed.
 
-
 Development Process
 -------------------
 
 The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/UIDD/UIDD/tags) are created
+completely stable. [Tags](https://github.com/uiddproject/uidd/tags) are created
 regularly to indicate new official, stable release versions of Uidd.
 
-The contribution workflow is described in [CONTRIBUTING.md](https://github.com/UIDD/UIDD/blob/master/CONTRIBUTING.md).
-
+The contribution workflow is described in [CONTRIBUTING.md](https://github.com/uiddproject/uidd/blob/master/CONTRIBUTING.md)
+and useful hints for developers can be found in [doc/developer-notes.md](doc/developer-notes.md).
 
 Testing
 -------
@@ -273,8 +269,11 @@ submit new unit tests for old code. Unit tests can be compiled and run
 and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).
 
 There are also [regression and integration tests](/test), written
-in Python, that are run automatically on the build server.
+in Python.
 These tests can be run (if the [test dependencies](/test) are installed) with: `test/functional/test_runner.py`
+
+The CI (Continuous Integration) systems make sure that every pull request is built for Windows, Linux, and macOS,
+and that unit/sanity tests are run automatically.
 
 ### Manual Quality Assurance (QA) Testing
 
@@ -283,3 +282,14 @@ code. This is especially important for large or high-risk changes. It is useful
 to add a test plan to the pull request description if testing the changes is
 not straightforward.
 
+Translations
+------------
+
+Changes to translations as well as new translations can be submitted to
+[Bitcoin Core's Transifex page](https://www.transifex.com/bitcoin/bitcoin/).
+
+Translations are periodically pulled from Transifex and merged into the git repository. See the
+[translation process](doc/translation_process.md) for details on how this works.
+
+**Important**: We do not accept translation changes as GitHub pull requests because the next
+pull from Transifex would automatically overwrite them again.

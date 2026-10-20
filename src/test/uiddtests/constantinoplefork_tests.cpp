@@ -103,7 +103,8 @@ const std::vector<valtype> CODE = {
 
 void genesisLoading(){
     const CChainParams& chainparams = Params();
-    dev::eth::ChainParams cp((chainparams.EVMGenesisInfo(dev::eth::Network::uiddMainNetwork, 999)));
+    int forkHeight = Params().GetConsensus().CoinbaseMaturity(0) + 499;
+    dev::eth::ChainParams cp(chainparams.EVMGenesisInfo(forkHeight));
     globalState->populateFrom(cp.genesisState);
     globalSealEngine = std::unique_ptr<dev::eth::SealEngineFace>(cp.createSealEngine());
     globalState->db().commit();
@@ -126,99 +127,99 @@ BOOST_FIXTURE_TEST_SUITE(constantinoplefork_tests, TestChain100Setup)
 
 BOOST_AUTO_TEST_CASE(checking_returndata_opcode_after_fork){
     // Initialize
-    initState();
+//    initState();
     genesisLoading();
-    createNewBlocks(this,999 - COINBASE_MATURITY);
+    createNewBlocks(this, 499);
     dev::h256 hashTx(HASHTX);
 
     // Create contracts
     std::vector<UiddTransaction> txs;
     txs.push_back(createUiddTransaction(CODE[0], 0, GASLIMIT, dev::u256(1), hashTx, dev::Address()));
     txs.push_back(createUiddTransaction(CODE[1], 0, GASLIMIT, dev::u256(1), ++hashTx, dev::Address()));
-    executeBC(txs);
+    executeBC(txs, *m_node.chainman);
 
     // Call upgrade to
     dev::Address proxy = createUiddAddress(txs[0].getHashWith(), txs[0].getNVout());
     std::vector<UiddTransaction> txsCall;
     txsCall.push_back(createUiddTransaction(CODE[2], 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
-    executeBC(txsCall);
+    executeBC(txsCall, *m_node.chainman);
 
     // Call mint
     std::vector<UiddTransaction> txsMint;
     txsMint.push_back(createUiddTransaction(CODE[3], 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
-    auto result = executeBC(txsMint);
+    auto result = executeBC(txsMint, *m_node.chainman);
     BOOST_CHECK(result.first[0].execRes.excepted == dev::eth::TransactionException::None);
 
     // Call balance of
     std::vector<UiddTransaction> txsbalance;
     txsbalance.push_back(createUiddTransaction(ParseHex("70a082310000000000000000000000000101010101010101010101010101010101010101"), 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
-    result = executeBC(txsbalance);
+    result = executeBC(txsbalance, *m_node.chainman);
     BOOST_CHECK(dev::h256(result.first[0].execRes.output) == dev::h256(0x0000000000000000000000000000000000000000000000000000000000000020));
 }
 
 BOOST_AUTO_TEST_CASE(checking_returndata_opcode_before_fork){
     // Initialize
-    initState();
+//    initState();
     genesisLoading();
-    createNewBlocks(this,998 - COINBASE_MATURITY);
+    createNewBlocks(this, 498);
     dev::h256 hashTx(HASHTX);
 
     // Create contracts
     std::vector<UiddTransaction> txs;
     txs.push_back(createUiddTransaction(CODE[0], 0, GASLIMIT, dev::u256(1), hashTx, dev::Address()));
     txs.push_back(createUiddTransaction(CODE[1], 0, GASLIMIT, dev::u256(1), ++hashTx, dev::Address()));
-    executeBC(txs);
+    executeBC(txs, *m_node.chainman);
 
     // Call upgrade to
     dev::Address proxy = createUiddAddress(txs[0].getHashWith(), txs[0].getNVout());
     std::vector<UiddTransaction> txsCall;
     txsCall.push_back(createUiddTransaction(CODE[2], 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
-    executeBC(txsCall);
+    executeBC(txsCall, *m_node.chainman);
 
     // Call mint
     std::vector<UiddTransaction> txsMint;
     txsMint.push_back(createUiddTransaction(CODE[3], 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
-    auto result = executeBC(txsMint);
+    auto result = executeBC(txsMint, *m_node.chainman);
     BOOST_CHECK(result.first[0].execRes.excepted == dev::eth::TransactionException::BadInstruction);
 }
 
 BOOST_AUTO_TEST_CASE(checking_constantinople_after_fork){
     // Initialize
-    initState();
+//    initState();
     genesisLoading();
-    createNewBlocks(this,999 - COINBASE_MATURITY);
+    createNewBlocks(this, 499);
     dev::h256 hashTx(HASHTX);
 
     // Create contract
     std::vector<UiddTransaction> txs;
     txs.push_back(createUiddTransaction(CODE[4], 0, GASLIMIT, dev::u256(1), hashTx, dev::Address()));
-    executeBC(txs);
+    executeBC(txs, *m_node.chainman);
 
     // Call is it constantinople
     dev::Address proxy = createUiddAddress(txs[0].getHashWith(), txs[0].getNVout());
     std::vector<UiddTransaction> txIsItConstantinople;
     txIsItConstantinople.push_back(createUiddTransaction(CODE[5], 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
-    auto result = executeBC(txIsItConstantinople);
+    auto result = executeBC(txIsItConstantinople, *m_node.chainman);
     BOOST_CHECK(dev::h256(result.first[0].execRes.output) == dev::h256(0x0000000000000000000000000000000000000000000000000000000000000001));
 }
 
 BOOST_AUTO_TEST_CASE(checking_constantinople_before_fork){
     // Initialize
-    initState();
+//    initState();
     genesisLoading();
-    createNewBlocks(this,998 - COINBASE_MATURITY);
+    createNewBlocks(this, 498);
     dev::h256 hashTx(HASHTX);
 
     // Create contract
     std::vector<UiddTransaction> txs;
     txs.push_back(createUiddTransaction(CODE[4], 0, GASLIMIT, dev::u256(1), hashTx, dev::Address()));
-    executeBC(txs);
+    executeBC(txs, *m_node.chainman);
 
     // Call is it constantinople
     dev::Address proxy = createUiddAddress(txs[0].getHashWith(), txs[0].getNVout());
     std::vector<UiddTransaction> txIsItConstantinople;
     txIsItConstantinople.push_back(createUiddTransaction(CODE[5], 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
-    auto result = executeBC(txIsItConstantinople);
+    auto result = executeBC(txIsItConstantinople, *m_node.chainman);
     BOOST_CHECK(dev::h256(result.first[0].execRes.output) == dev::h256(0x0000000000000000000000000000000000000000000000000000000000000000));
 }
 

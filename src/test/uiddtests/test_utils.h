@@ -1,8 +1,11 @@
+#ifndef UIDDTESTS_TEST_UTILS_H
+#define UIDDTESTS_TEST_UTILS_H
+
 #include <util/system.h>
 #include <validation.h>
 #include <util/strencodings.h>
 #include <util/convert.h>
-#include <test/setup_common.h>
+#include <test/util/setup_common.h>
 #include <boost/filesystem/operations.hpp>
 #include <fs.h>
 
@@ -60,11 +63,11 @@ inline UiddTransaction createUiddTransaction(valtype data, dev::u256 value, dev:
     return txEth;
 }
 
-inline std::pair<std::vector<ResultExecute>, ByteCodeExecResult> executeBC(std::vector<UiddTransaction> txs){
+inline std::pair<std::vector<ResultExecute>, ByteCodeExecResult> executeBC(std::vector<UiddTransaction> txs, ChainstateManager& chainman){
     CBlock block(generateBlock());
-    UiddDGP uiddDGP(globalState.get(), fGettingValuesDGP);
-    uint64_t blockGasLimit = uiddDGP.getBlockGasLimit(ChainActive().Tip()->nHeight + 1);
-    ByteCodeExec exec(block, txs, blockGasLimit, ChainActive().Tip());
+    UiddDGP uiddDGP(globalState.get(), chainman.ActiveChainstate(), fGettingValuesDGP);
+    uint64_t blockGasLimit = uiddDGP.getBlockGasLimit(chainman.ActiveChain().Tip()->nHeight + 1);
+    ByteCodeExec exec(block, txs, blockGasLimit, chainman.ActiveChain().Tip(), chainman.ActiveChain());
     exec.performByteCode();
     std::vector<ResultExecute> res = exec.getResult();
     ByteCodeExecResult bceExecRes;
@@ -73,3 +76,5 @@ inline std::pair<std::vector<ResultExecute>, ByteCodeExecResult> executeBC(std::
     globalState->dbUtxo().commit();
     return std::make_pair(res, bceExecRes);
 }
+
+#endif // UIDDTESTS_TEST_UTILS_H

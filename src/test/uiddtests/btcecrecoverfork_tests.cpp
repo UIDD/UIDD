@@ -78,7 +78,7 @@ dev::bytes parseOutput(const dev::bytes& output)
 
 void genesisLoading(){
     const CChainParams& chainparams = Params();
-    dev::eth::ChainParams cp((chainparams.EVMGenesisInfo(dev::eth::Network::uiddMainNetwork)));
+    dev::eth::ChainParams cp(chainparams.EVMGenesisInfo());
     globalState->populateFrom(cp.genesisState);
     globalSealEngine = std::unique_ptr<dev::eth::SealEngineFace>(cp.createSealEngine());
     globalState->db().commit();
@@ -101,15 +101,15 @@ BOOST_FIXTURE_TEST_SUITE(btcecrecoverfork_tests, TestChain100Setup)
 
 BOOST_AUTO_TEST_CASE(checking_btcecrecover_after_fork){
     // Initialize
-    initState();
+//    initState();
     genesisLoading();
-    createNewBlocks(this,999 - COINBASE_MATURITY);
+    createNewBlocks(this, 499);
     dev::h256 hashTx(HASHTX);
 
     // Create contract
     std::vector<UiddTransaction> txs;
     txs.push_back(createUiddTransaction(CODE[0], 0, GASLIMIT, dev::u256(1), hashTx, dev::Address()));
-    executeBC(txs);
+    executeBC(txs, *m_node.chainman);
 
     // Call btc_ecrecover
     dev::Address proxy = createUiddAddress(txs[0].getHashWith(), txs[0].getNVout());
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(checking_btcecrecover_after_fork){
     txBtcEcrecover.push_back(createUiddTransaction(CODE[4], 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
 
     // Execute contracts
-    auto result = executeBC(txBtcEcrecover);
+    auto result = executeBC(txBtcEcrecover, *m_node.chainman);
 
     // Check results
     dev::bytes output = parseOutput(result.first[0].execRes.output);
@@ -135,15 +135,15 @@ BOOST_AUTO_TEST_CASE(checking_btcecrecover_after_fork){
 
 BOOST_AUTO_TEST_CASE(checking_btcecrecover_before_fork){
     // Initialize
-    initState();
+//    initState();
     genesisLoading();
-    createNewBlocks(this,998 - COINBASE_MATURITY);
+    createNewBlocks(this, 498);
     dev::h256 hashTx(HASHTX);
 
     // Create contract
     std::vector<UiddTransaction> txs;
     txs.push_back(createUiddTransaction(CODE[0], 0, GASLIMIT, dev::u256(1), hashTx, dev::Address()));
-    executeBC(txs);
+    executeBC(txs, *m_node.chainman);
 
     // Call btc_ecrecover
     dev::Address proxy = createUiddAddress(txs[0].getHashWith(), txs[0].getNVout());
@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE(checking_btcecrecover_before_fork){
     txBtcEcrecover.push_back(createUiddTransaction(CODE[4], 0, GASLIMIT, dev::u256(1), ++hashTx, proxy));
 
      // Execute contracts
-    auto result = executeBC(txBtcEcrecover);
+    auto result = executeBC(txBtcEcrecover, *m_node.chainman);
 
     // Check results
     dev::bytes output = parseOutput(result.first[0].execRes.output);

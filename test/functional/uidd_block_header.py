@@ -6,7 +6,7 @@
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from test_framework.blocktools import *
-from test_framework.mininode import *
+from test_framework.p2p import *
 from test_framework.address import *
 from test_framework.uidd import *
 import time
@@ -33,7 +33,7 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
 
     def run_test(self):
         self.nodes[0].add_p2p_connection(P2PDataStore())
-        self.nodes[0].p2p.wait_for_getheaders(timeout=5)
+        self.nodes[0].p2ps[0].wait_for_getheaders(timeout=5)
 
         node = self.nodes[0]
         #mocktime = 1490247077
@@ -41,10 +41,10 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
 
         node.generate(10)
         self.block_time = int(time.time())+20
-        for i in range(500):
+        for i in range(COINBASE_MATURITY):
             self.tip = create_block(int(node.getbestblockhash(), 16), create_coinbase(node.getblockcount()+1), self.block_time+i)
             self.tip.solve()
-            self.sync_blocks([self.tip])
+            self.sync_all_blocks([self.tip])
 
         #node.generate(COINBASE_MATURITY+50)
         mocktime = COINBASE_MATURITY+50
@@ -59,7 +59,7 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
         self.tip = create_block(int(node.getbestblockhash(), 16), coinbase, int(time.time()+mocktime+100))
         self.tip.hashMerkleRoot = self.tip.calc_merkle_root()
         self.tip.solve()
-        self.sync_blocks([self.tip])
+        self.sync_all_blocks([self.tip])
 
         coinbase = create_coinbase(node.getblockcount()+1)
         coinbase.rehash()
@@ -82,7 +82,7 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
         self.tip.vtx.append(tx)
         self.tip.hashMerkleRoot = self.tip.calc_merkle_root()
         self.tip.solve()
-        self.sync_blocks([self.tip], success=False, reconnect=True)
+        self.sync_all_blocks([self.tip], success=False, reconnect=True)
 
 
         # Create a contract for use later.
@@ -106,7 +106,7 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
         self.tip.hashStateRoot = 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         self.tip.hashMerkleRoot = self.tip.calc_merkle_root()
         self.tip.solve()
-        self.sync_blocks([self.tip], success=False, reconnect=True)
+        self.sync_all_blocks([self.tip], success=False, reconnect=True)
 
 
         # A block with a tx, but without updated state hashes
@@ -123,7 +123,7 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
         self.tip.vtx.append(tx)
         self.tip.hashMerkleRoot = self.tip.calc_merkle_root()
         self.tip.solve()
-        self.sync_blocks([self.tip], success=False, reconnect=True)
+        self.sync_all_blocks([self.tip], success=False, reconnect=True)
 
         # A block with an invalid hashUTXORoot
         coinbase = create_coinbase(node.getblockcount()+1)
@@ -133,7 +133,7 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
         self.tip.hashUTXORoot = 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         self.tip.hashMerkleRoot = self.tip.calc_merkle_root()
         self.tip.solve()
-        self.sync_blocks([self.tip], success=False, reconnect=True)
+        self.sync_all_blocks([self.tip], success=False, reconnect=True)
 
         # A block with an invalid hashStateRoot
         coinbase = create_coinbase(node.getblockcount()+1)
@@ -143,7 +143,7 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
         self.tip.hashStateRoot = 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         self.tip.hashMerkleRoot = self.tip.calc_merkle_root()
         self.tip.solve()
-        self.sync_blocks([self.tip], success=False, reconnect=True)
+        self.sync_all_blocks([self.tip], success=False, reconnect=True)
 
         # Verify that blocks with a correct hashStateRoot and hashUTXORoot are accepted.
         coinbase = create_coinbase(node.getblockcount()+1)
@@ -153,7 +153,7 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
         self.tip.hashStateRoot = realHashStateRoot
         self.tip.hashMerkleRoot = self.tip.calc_merkle_root()
         self.tip.solve()
-        self.sync_blocks([self.tip])
+        self.sync_all_blocks([self.tip])
 
 
     def reconnect_p2p(self):
@@ -163,13 +163,13 @@ class UiddBlockHeaderTest(BitcoinTestFramework):
         method reconnects the p2p and restarts the network thread."""
         self.nodes[0].disconnect_p2ps()
         self.nodes[0].add_p2p_connection(P2PDataStore())
-        self.nodes[0].p2p.wait_for_getheaders(timeout=5)
+        self.nodes[0].p2ps[0].wait_for_getheaders(timeout=5)
 
-    def sync_blocks(self, blocks, success=True, reject_code=None, reject_reason=None, force_send=False, reconnect=False, timeout=5):
+    def sync_all_blocks(self, blocks, success=True, reject_code=None, reject_reason=None, force_send=False, reconnect=False, timeout=5):
         """Sends blocks to test node. Syncs and verifies that tip has advanced to most recent block.
 
         Call with success = False if the tip shouldn't advance to the most recent block."""
-        self.nodes[0].p2p.send_blocks_and_test(blocks, self.nodes[0], success=success, reject_reason=reject_reason, force_send=force_send, timeout=timeout, expect_disconnect=reconnect)
+        self.nodes[0].p2ps[0].send_blocks_and_test(blocks, self.nodes[0], success=success, reject_reason=reject_reason, force_send=force_send, timeout=timeout, expect_disconnect=reconnect)
 
         if reconnect:
             self.reconnect_p2p()

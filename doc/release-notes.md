@@ -1,23 +1,9 @@
-*After branching off for a major version release of Bitcoin Core, use this
-template to create the initial release notes draft.*
+22.0 Release Notes
+==================
 
-*The release notes draft is a temporary file that can be added to by anyone. See
-[/doc/developer-notes.md#release-notes](/doc/developer-notes.md#release-notes)
-for the process.*
+Bitcoin Core version 22.0 is now available from:
 
-*Create the draft, named* "*version* Release Notes Draft"
-*(e.g. "0.20.0 Release Notes Draft"), as a collaborative wiki in:*
-
-https://github.com/bitcoin-core/bitcoin-devwiki/wiki/
-
-*Before the final release, move the notes back to this git repository.*
-
-*version* Release Notes Draft
-===============================
-
-Bitcoin Core version *version* is now available from:
-
-  <https://bitcoincore.org/bin/bitcoin-core-*version*/>
+  <https://bitcoincore.org/bin/bitcoin-core-22.0/>
 
 This release includes new features, various bug fixes and performance
 improvements, as well as updated translations.
@@ -34,41 +20,97 @@ How to Upgrade
 ==============
 
 If you are running an older version, shut it down. Wait until it has completely
-shut down (which might take a few minutes for older versions), then run the
+shut down (which might take a few minutes in some cases), then run the
 installer (on Windows) or just copy over `/Applications/Bitcoin-Qt` (on Mac)
 or `bitcoind`/`bitcoin-qt` (on Linux).
 
 Upgrading directly from a version of Bitcoin Core that has reached its EOL is
-possible, but it might take some time if the datadir needs to be migrated. Old
+possible, but it might take some time if the data directory needs to be migrated. Old
 wallet versions of Bitcoin Core are generally supported.
 
 Compatibility
 ==============
 
-Bitcoin Core is supported and extensively tested on operating systems using
-the Linux kernel, macOS 10.10+, and Windows 7 and newer. It is not recommended
-to use Bitcoin Core on unsupported systems.
+Bitcoin Core is supported and extensively tested on operating systems
+using the Linux kernel, macOS 10.14+, and Windows 7 and newer.  Bitcoin
+Core should also work on most other Unix-like systems but is not as
+frequently tested on them.  It is not recommended to use Bitcoin Core on
+unsupported systems.
 
-Bitcoin Core should also work on most other Unix-like systems but is not
-as frequently tested on them.
-
-From Bitcoin Core 0.17.0 onwards, macOS versions earlier than 10.10 are no
-longer supported, as Bitcoin Core is now built using Qt 5.9.x which requires
-macOS 10.10+. Additionally, Bitcoin Core does not yet change appearance when
-macOS "dark mode" is activated.
-
-In addition to previously supported CPU platforms, this release's pre-compiled
-distribution provides binaries for the RISC-V platform.
+From Bitcoin Core 22.0 onwards, macOS versions earlier than 10.14 are no longer supported.
 
 Notable changes
 ===============
+
+P2P and network changes
+-----------------------
+
+New and Updated RPCs
+--------------------
+
+Build System
+------------
+
+Files
+-----
+
+New settings
+------------
+
+Updated settings
+----------------
+
+Tools and Utilities
+-------------------
+
+Wallet
+------
+
+GUI changes
+-----------
+
+Low-level changes
+=================
+
+RPC
+---
+
+Tests
+-----
+
+22.0 change log
+===============
+
+A detailed list of changes in this version follows. To keep the list to a manageable length, small refactors and typo fixes are not included, and similar changes are sometimes condensed into one line.
+
+### Consensus
+
+### Policy
+
+### Mining
+
+### Block and transaction handling
+
+### P2P protocol and network code
+
+### Wallet
+
+### RPC and other APIs
+
+### GUI
+
+### Build system
+
+### Tests and QA
+
+### Miscellaneous
+
+### Documentation
 
 Credits
 =======
 
 Thanks to everyone who directly contributed to this release:
-
-(todo)
 
 As well as to everyone that helped with translations on
 [Transifex](https://www.transifex.com/bitcoin/bitcoin/).

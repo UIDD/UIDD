@@ -3,7 +3,7 @@
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 from test_framework.script import *
-from test_framework.mininode import *
+from test_framework.p2p import *
 from test_framework.uidd import *
 from test_framework.address import *
 from test_framework.blocktools import *
@@ -18,6 +18,9 @@ class UiddDGPGasSchedule(BitcoinTestFramework):
         self.setup_clean_chain = True
         self.num_nodes = 2
         self.extra_args = [['-dgpevm'], ['-dgpstorage']]
+
+    def skip_test_if_missing_module(self):
+        self.skip_if_no_wallet()
 
 
     def create_proposal_contract(self):
@@ -78,9 +81,9 @@ class UiddDGPGasSchedule(BitcoinTestFramework):
     def run_test(self):
         # Generate some blocks to make sure we have enough spendable outputs
         self.node = self.nodes[0]
-        self.node.generate(1 + COINBASE_MATURITY)
+        generatesynchronized(self.node, 1+COINBASE_MATURITY, None, self.nodes)
         self.node.sendtoaddress(self.nodes[1].getnewaddress(), INITIAL_BLOCK_REWARD-1)
-        self.node.generate(COINBASE_MATURITY)
+        generatesynchronized(self.node, COINBASE_MATURITY, None, self.nodes)
         self.BLOCK_SIZE_DGP = DGPState(self.node, "0000000000000000000000000000000000000080")
         # Start off by setting ourself as admin
         admin_address = self.node.getnewaddress()
