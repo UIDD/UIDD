@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2018 The Bitcoin Core developers
+// Copyright (c) 2011-2020 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,6 +9,9 @@
 
 /* Milliseconds between model updates */
 static const int MODEL_UPDATE_DELAY = 2000;
+
+/* Milliseconds between device updates */
+static const int DEVICE_UPDATE_DELAY = 10000;
 
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
@@ -46,15 +49,22 @@ static const int TOOLTIP_WRAP_THRESHOLD = 80;
 #define QAPP_ORG_DOMAIN "uidd.org"
 #define QAPP_APP_NAME_DEFAULT "Uidd-Qt"
 #define QAPP_APP_NAME_TESTNET "Uidd-Qt-testnet"
+#define QAPP_APP_NAME_SIGNET "Uidd-Qt-signet"
 #define QAPP_APP_NAME_REGTEST "Uidd-Qt-regtest"
 
 /* One gigabyte (GB) in bytes */
 static constexpr uint64_t GB_BYTES{1000000000};
 
+// Default prune target displayed in GUI.
+static constexpr int DEFAULT_PRUNE_TARGET_GB{2};
+
 /* Mainnet uidd explorer uri */
-static const QString UIDD_INFO_MAINNET = "<a href='https://scan.uidd.org/%1/%2'>%2</a>";
+#define UIDD_INFO_MAINNET "<a href='https://uidd.info/%1/%2'>%2</a>"
 
 /* Testnet uidd explorer uri */
-static const QString UIDD_INFO_TESTNET = "<a href='https://testnet.scan.uidd.org/%1/%2'>%2</a>";
+#define UIDD_INFO_TESTNET "<a href='https://testnet.uidd.info/%1/%2'>%2</a>"
+
+/* Hardware wallet interface uri */
+#define UIDD_HWI_TOOL "<a href='https://github.com/uiddproject/HWI/tags'>HWI Tool</a>"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

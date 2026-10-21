@@ -57,11 +57,11 @@ public:
     {
         if(instance().network == "main")
         {
-            return UIDD_INFO_MAINNET.arg("tx", txHash);
+            return QString(UIDD_INFO_MAINNET).arg("tx", txHash);
         }
         else if(instance().network == "test")
         {
-            return UIDD_INFO_TESTNET.arg("tx", txHash);
+            return QString(UIDD_INFO_TESTNET).arg("tx", txHash);
         }
 
         return txHash;

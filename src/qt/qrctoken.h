@@ -9,7 +9,6 @@
 #include <QModelIndex>
 #include <QAbstractItemModel>
 
-class TokenViewDelegate;
 class WalletModel;
 class ClientModel;
 class TokenTransactionView;
@@ -33,6 +32,8 @@ public:
     void setClientModel(ClientModel *clientModel);
 
 Q_SIGNALS:
+    // Fired when a message should be reported to the user
+    void message(const QString &title, const QString &message, unsigned int style);
 
 public Q_SLOTS:
     void on_goToSendTokenPage();

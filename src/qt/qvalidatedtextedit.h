@@ -11,7 +11,7 @@ class QValidatedTextEdit : public QTextEdit
 public:
     explicit QValidatedTextEdit(QWidget *parent);
     void clear();
-    void setCheckValidator(const QValidator *v);
+    void setCheckValidator(const QValidator *v, bool lineByLine = false, bool removeDuplicates = false);
     bool isValid();
 
     bool getEmptyIsValid() const;
@@ -20,15 +20,20 @@ public:
     bool getIsValidManually() const;
     void setIsValidManually(bool value);
 
+    QStringList getLines() const;
+    void setLines(const QStringList& lines);
+
 protected:
-    void focusInEvent(QFocusEvent *event);
-    void focusOutEvent(QFocusEvent *event);
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 
 private:
     bool valid;
     const QValidator *checkValidator;
     bool emptyIsValid;
     bool isValidManually;
+    bool lineByLine;
+    bool removeDuplicates;
 
 public Q_SLOTS:
     void setValid(bool valid);

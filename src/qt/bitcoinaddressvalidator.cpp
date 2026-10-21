@@ -7,7 +7,7 @@
 #include <key_io.h>
 
 /* Base58 characters are:
-     "12563478BC9ADEFGHJKLMNPQRSTUVWXYZabefcdghijkmnopqrstuvwxyz"
+     "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
   This is:
   - All numbers except for '0'
@@ -89,6 +89,7 @@ BitcoinAddressCheckValidator::BitcoinAddressCheckValidator(QObject *parent, bool
 QValidator::State BitcoinAddressCheckValidator::validate(QString &input, int &pos) const
 {
     Q_UNUSED(pos);
+
     if(m_senderAddress &&
             !IsValidContractSenderAddressString(input.toStdString()))
     {
