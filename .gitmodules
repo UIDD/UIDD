@@ -1,3 +1,3 @@
 [submodule "src/evmone"]
 	path = src/evmone
-	url = https://github.com/uiddproject/uidd-evmone
+	url = https://github.com/UIDD/uidd-evmone
